@@ -78,17 +78,48 @@
             border-color: #667eea;
         }
 
-        .checkbox-group {
+        .version-chips {
             display: flex;
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 10px;
             margin-top: 10px;
+        }
+
+        .version-chip {
+            padding: 10px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 20px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            user-select: none;
+        }
+
+        .version-chip:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .version-chip.selected {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
         }
 
         .checkbox-item {
             display: flex;
             align-items: center;
             gap: 8px;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .checkbox-item:hover {
+            background-color: #f5f5f5;
         }
 
         .checkbox-item input[type="checkbox"] {
@@ -253,14 +284,14 @@
             </div>
 
             <div class="control-group">
-                <label>バージョンフィルター</label>
-                <div class="checkbox-group" id="versionFilters">
+                <label>バージョン</label>
+                <div class="version-chips" id="versionChips">
                     <!-- Dynamically populated -->
                 </div>
             </div>
 
             <div class="control-group">
-                <div class="checkbox-item">
+                <div class="checkbox-item" onclick="toggleApprovalFilter()">
                     <input type="checkbox" id="approvedOnly">
                     <label for="approvedOnly">承認済のみ表示</label>
                 </div>
@@ -278,16 +309,19 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <script>
-        // CSVではなくJSONP形式で取得（CORS回避）
-        const SHEET_ID = '2PACX-1vTcbfFqXNjOj4QahEIgU_-3HUC_8jqlZG6AlE_uDugLldxQ0cxOXGuUWncljuFergSWWIAz0ha45F6w';
-        const GID = '424411277';
-        const CSV_URL = `https://docs.google.com/spreadsheets/d/e/${SHEET_ID}/pub?gid=${GID}&single=true&output=csv`;
+        const RECORD_TSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTcbfFqXNjOj4QahEIgU_-3HUC_8jqlZG6AlE_uDugLldxQ0cxOXGuUWncljuFergSWWIAz0ha45F6w/pub?gid=424411277&single=true&output=tsv';
+        const VERSION_MASTER_TSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTcbfFqXNjOj4QahEIgU_-3HUC_8jqlZG6AlE_uDugLldxQ0cxOXGuUWncljuFergSWWIAz0ha45F6w/pub?gid=1793598825&single=true&output=tsv';
 
         let allData = [];
         let courseMaster = [];
-        let selectedVersions = ['0.18.0以降'];
+        let versionMaster = [];
+        let selectedVersions = [];
 
-        // Initialize
+        function toggleApprovalFilter() {
+            document.getElementById('approvedOnly').checked = !document.getElementById('approvedOnly').checked;
+            renderRanking();
+        }
+
         function init() {
             setupEventListeners();
             loadData();
@@ -310,7 +344,6 @@
         function setupEventListeners() {
             document.getElementById('category').addEventListener('change', onCategoryChange);
             document.getElementById('course').addEventListener('change', renderRanking);
-            document.getElementById('approvedOnly').addEventListener('change', renderRanking);
         }
 
         function onCategoryChange() {
@@ -334,102 +367,113 @@
             }
         }
 
-        function loadData() {
+        async function loadData() {
             const rankingTable = document.getElementById('rankingTable');
             rankingTable.innerHTML = '<div class="loading">データを読み込んでいます...</div>';
 
-            // ProxyでCORS回避、またはfetchで直接取得を試みる
-            fetch(CSV_URL)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('ネットワークエラー');
+            try {
+                // バージョンマスタを先に読み込む
+                const versionResponse = await fetch(VERSION_MASTER_TSV_URL);
+                const versionText = await versionResponse.text();
+                
+                Papa.parse(versionText, {
+                    header: true,
+                    delimiter: '\t',
+                    complete: function(results) {
+                        versionMaster = results.data.filter(row => row[Object.keys(row)[0]]);
+                        console.log('バージョンマスタ:', versionMaster);
                     }
-                    return response.text();
-                })
-                .then(csvText => {
-                    Papa.parse(csvText, {
-                        header: true,
-                        complete: function(results) {
-                            allData = results.data.filter(row => row.ID && row.ID.trim() !== '');
-                            
-                            console.log('全データ件数:', allData.length);
-                            console.log('最初の3件:', allData.slice(0, 3));
-                            
-                            // CSVから大会種別とコースの組み合わせを抽出
-                            const categoryCoursePairs = new Map();
-                            allData.forEach(row => {
-                                const category = row['大会種別'];
-                                const course = row['コース'];
-                                if (category && course) {
-                                    if (!categoryCoursePairs.has(category)) {
-                                        categoryCoursePairs.set(category, new Set());
-                                    }
-                                    categoryCoursePairs.get(category).add(course);
-                                }
-                            });
-                            
-                            // courseMasterを生成
-                            courseMaster = [];
-                            categoryCoursePairs.forEach((courses, category) => {
-                                courses.forEach(course => {
-                                    courseMaster.push({ category, course });
-                                });
-                            });
-                            
-                            console.log('コースマスタ:', courseMaster);
-                            
-                            // 大会種別のドロップダウンを生成
-                            populateCategories();
-                            
-                            // Get unique versions
-                            const versions = [...new Set(allData.map(row => row['バージョン']).filter(v => v))];
-                            populateVersionFilters(versions);
-                            
-                            renderRanking();
-                        }
-                    });
-                })
-                .catch(error => {
-                    console.error('データ取得エラー:', error);
-                    rankingTable.innerHTML = `
-                        <div class="empty-state">
-                            <h2>データの読み込みに失敗しました</h2>
-                            <p>エラー: ${error.message}</p>
-                        </div>
-                    `;
                 });
+
+                // Recordデータを読み込む
+                const recordResponse = await fetch(RECORD_TSV_URL);
+                const recordText = await recordResponse.text();
+                
+                Papa.parse(recordText, {
+                    header: true,
+                    delimiter: '\t',
+                    complete: function(results) {
+                        allData = results.data.filter(row => row.ID && row.ID.trim() !== '');
+                        
+                        console.log('全データ件数:', allData.length);
+                        console.log('最初の3件:', allData.slice(0, 3));
+                        console.log('カラム名:', Object.keys(allData[0]));
+                        
+                        const categoryCoursePairs = new Map();
+                        allData.forEach(row => {
+                            const category = row['大会種別'];
+                            const course = row['コース'];
+                            if (category && course) {
+                                if (!categoryCoursePairs.has(category)) {
+                                    categoryCoursePairs.set(category, new Set());
+                                }
+                                categoryCoursePairs.get(category).add(course);
+                            }
+                        });
+                        
+                        courseMaster = [];
+                        categoryCoursePairs.forEach((courses, category) => {
+                            courses.forEach(course => {
+                                courseMaster.push({ category, course });
+                            });
+                        });
+                        
+                        console.log('コースマスタ:', courseMaster);
+                        
+                        populateCategories();
+                        populateVersionChips();
+                        renderRanking();
+                    }
+                });
+            } catch (error) {
+                console.error('データ取得エラー:', error);
+                rankingTable.innerHTML = `
+                    <div class="empty-state">
+                        <h2>データの読み込みに失敗しました</h2>
+                        <p>エラー: ${error.message}</p>
+                    </div>
+                `;
+            }
         }
 
-        function populateVersionFilters(versions) {
-            const container = document.getElementById('versionFilters');
+        function populateVersionChips() {
+            const container = document.getElementById('versionChips');
             container.innerHTML = '';
             
+            // バージョンマスタの最後の行が最新バージョン
+            const versions = versionMaster.map(row => row[Object.keys(row)[0]]).reverse();
+            const latestVersion = versions[0];
+            
+            console.log('バージョン一覧（新→古）:', versions);
+            console.log('最新バージョン:', latestVersion);
+            
             versions.forEach(version => {
-                const div = document.createElement('div');
-                div.className = 'checkbox-item';
+                const chip = document.createElement('div');
+                chip.className = 'version-chip';
+                chip.textContent = version;
+                chip.dataset.version = version;
                 
-                const checkbox = document.createElement('input');
-                checkbox.type = 'checkbox';
-                checkbox.id = 'version-' + version;
-                checkbox.value = version;
-                checkbox.checked = version === '0.18.0以降';
-                checkbox.addEventListener('change', onVersionFilterChange);
+                // 最新バージョンをデフォルトで選択
+                if (version === latestVersion) {
+                    chip.classList.add('selected');
+                    selectedVersions.push(version);
+                }
                 
-                const label = document.createElement('label');
-                label.htmlFor = 'version-' + version;
-                label.textContent = version;
-                
-                div.appendChild(checkbox);
-                div.appendChild(label);
-                container.appendChild(div);
+                chip.addEventListener('click', () => toggleVersionChip(chip, version));
+                container.appendChild(chip);
             });
         }
 
-        function onVersionFilterChange() {
-            const checkboxes = document.querySelectorAll('#versionFilters input[type="checkbox"]');
-            selectedVersions = Array.from(checkboxes)
-                .filter(cb => cb.checked)
-                .map(cb => cb.value);
+        function toggleVersionChip(chip, version) {
+            chip.classList.toggle('selected');
+            
+            if (selectedVersions.includes(version)) {
+                selectedVersions = selectedVersions.filter(v => v !== version);
+            } else {
+                selectedVersions.push(version);
+            }
+            
+            console.log('選択中のバージョン:', selectedVersions);
             renderRanking();
         }
 
@@ -457,9 +501,7 @@
             
             console.log('フィルター条件:', { category, course });
             console.log('フィルター後:', filteredData.length, '件');
-            console.log('フィルター後の最初の3件:', filteredData.slice(0, 3));
 
-            // Version filter
             if (selectedVersions.length > 0) {
                 filteredData = filteredData.filter(row => 
                     selectedVersions.includes(row['バージョン'])
@@ -467,7 +509,6 @@
                 console.log('バージョンフィルター後:', filteredData.length, '件');
             }
 
-            // Approval filter
             if (approvedOnly) {
                 filteredData = filteredData.filter(row => 
                     row['承認状態'] === 'approved'
@@ -475,7 +516,6 @@
                 console.log('承認フィルター後:', filteredData.length, '件');
             }
 
-            // Sort by time
             filteredData.sort((a, b) => parseFloat(a['タイム(秒)']) - parseFloat(b['タイム(秒)']));
 
             if (filteredData.length === 0) {
@@ -532,7 +572,6 @@
             rankingTable.innerHTML = html;
         }
 
-        // Start the app
         init();
     </script>
 </body>

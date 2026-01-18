@@ -311,6 +311,7 @@
     <script>
         const RECORD_TSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTcbfFqXNjOj4QahEIgU_-3HUC_8jqlZG6AlE_uDugLldxQ0cxOXGuUWncljuFergSWWIAz0ha45F6w/pub?gid=424411277&single=true&output=tsv';
         const VERSION_MASTER_TSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTcbfFqXNjOj4QahEIgU_-3HUC_8jqlZG6AlE_uDugLldxQ0cxOXGuUWncljuFergSWWIAz0ha45F6w/pub?gid=1793598825&single=true&output=tsv';
+        const COURSE_MASTER_TSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTcbfFqXNjOj4QahEIgU_-3HUC_8jqlZG6AlE_uDugLldxQ0cxOXGuUWncljuFergSWWIAz0ha45F6w/pub?gid=2067266720&single=true&output=tsv';
 
         let allData = [];
         let courseMaster = [];
@@ -372,7 +373,7 @@
             rankingTable.innerHTML = '<div class="loading">データを読み込んでいます...</div>';
 
             try {
-                // バージョンマスタを先に読み込む
+                // バージョンマスタを読み込む
                 const versionResponse = await fetch(VERSION_MASTER_TSV_URL);
                 const versionText = await versionResponse.text();
                 
@@ -382,6 +383,26 @@
                     complete: function(results) {
                         versionMaster = results.data.filter(row => row[Object.keys(row)[0]]);
                         console.log('バージョンマスタ:', versionMaster);
+                    }
+                });
+
+                // コースマスタを読み込む
+                const courseResponse = await fetch(COURSE_MASTER_TSV_URL);
+                const courseText = await courseResponse.text();
+                
+                Papa.parse(courseText, {
+                    header: true,
+                    delimiter: '\t',
+                    complete: function(results) {
+                        const courseData = results.data.filter(row => row['大会種別'] && row['コース名']);
+                        
+                        courseMaster = courseData.map(row => ({
+                            category: row['大会種別'],
+                            course: row['コース名']
+                        }));
+                        
+                        console.log('コースマスタ:', courseMaster);
+                        populateCategories();
                     }
                 });
 
@@ -399,28 +420,6 @@
                         console.log('最初の3件:', allData.slice(0, 3));
                         console.log('カラム名:', Object.keys(allData[0]));
                         
-                        const categoryCoursePairs = new Map();
-                        allData.forEach(row => {
-                            const category = row['大会種別'];
-                            const course = row['コース'];
-                            if (category && course) {
-                                if (!categoryCoursePairs.has(category)) {
-                                    categoryCoursePairs.set(category, new Set());
-                                }
-                                categoryCoursePairs.get(category).add(course);
-                            }
-                        });
-                        
-                        courseMaster = [];
-                        categoryCoursePairs.forEach((courses, category) => {
-                            courses.forEach(course => {
-                                courseMaster.push({ category, course });
-                            });
-                        });
-                        
-                        console.log('コースマスタ:', courseMaster);
-                        
-                        populateCategories();
                         populateVersionChips();
                         renderRanking();
                     }
@@ -496,7 +495,7 @@
 
             let filteredData = allData.filter(row => 
                 row['大会種別'] === category && 
-                row['コース'] === course
+                row['コース名'] === course
             );
             
             console.log('フィルター条件:', { category, course });
@@ -516,7 +515,7 @@
                 console.log('承認フィルター後:', filteredData.length, '件');
             }
 
-            filteredData.sort((a, b) => parseFloat(a['タイム(秒)']) - parseFloat(b['タイム(秒)']));
+            filteredData.sort((a, b) => parseFloat(a['タイム']) - parseFloat(b['タイム']));
 
             if (filteredData.length === 0) {
                 rankingTable.innerHTML = `
@@ -555,7 +554,7 @@
                     <tr>
                         <td class="rank ${rankClass}">${rank}</td>
                         <td>${row['ユーザー名'] || '-'}</td>
-                        <td><strong>${row['タイム(秒)']}秒</strong></td>
+                        <td><strong>${row['タイム']}秒</strong></td>
                         <td>${row['記録日'] || '-'}</td>
                         <td>${row['バージョン'] || '-'}</td>
                         <td>${row['リンク'] ? `<a href="${row['リンク']}" target="_blank" class="video-link">▶ 動画</a>` : '-'}</td>

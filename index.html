@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skyエアレ Rankings</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 3em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+        }
+
+        .controls {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+        }
+
+        .control-group:last-child {
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            background: white;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+
+        select:hover {
+            border-color: #667eea;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .checkbox-item label {
+            margin: 0;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .ranking-table {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow-x: auto;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-state-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h2 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .empty-state p {
+            font-size: 1.1em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #e0e0e0;
+            transition: background-color 0.2s;
+        }
+
+        tbody tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        td {
+            padding: 15px;
+        }
+
+        .rank {
+            font-weight: 700;
+            font-size: 1.2em;
+            color: #667eea;
+        }
+
+        .rank-1 { color: #FFD700; }
+        .rank-2 { color: #C0C0C0; }
+        .rank-3 { color: #CD7F32; }
+
+        .video-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .video-link:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .status-approved {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 1.2em;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            .controls {
+                padding: 20px;
+            }
+
+            table {
+                font-size: 0.9em;
+            }
+
+            th, td {
+                padding: 10px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏆 Skyエアレ Rankings</h1>
+        </header>
+
+        <div class="controls">
+            <div class="control-group">
+                <label for="category">大会種別</label>
+                <select id="category">
+                    <option value="">-- 大会種別を選択してください --</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label for="course">コース</label>
+                <select id="course" disabled>
+                    <option value="">-- まず大会種別を選択してください --</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label>バージョンフィルター</label>
+                <div class="checkbox-group" id="versionFilters">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+
+            <div class="control-group">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="approvedOnly">
+                    <label for="approvedOnly">承認済のみ表示</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="ranking-table" id="rankingTable">
+            <div class="empty-state">
+                <div class="empty-state-icon">🎮</div>
+                <h2>大会種別とコースを選択してください</h2>
+                <p>上記のフィルターから表示したいランキングを選んでください</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script>
+        // CSVではなくJSONP形式で取得（CORS回避）
+        const SHEET_ID = '2PACX-1vTcbfFqXNjOj4QahEIgU_-3HUC_8jqlZG6AlE_uDugLldxQ0cxOXGuUWncljuFergSWWIAz0ha45F6w';
+        const GID = '424411277';
+        const CSV_URL = `https://docs.google.com/spreadsheets/d/e/${SHEET_ID}/pub?gid=${GID}&single=true&output=csv`;
+
+        let allData = [];
+        let courseMaster = [];
+        let selectedVersions = ['0.18.0以降'];
+
+        // Initialize
+        function init() {
+            setupEventListeners();
+            loadData();
+        }
+
+        function populateCategories() {
+            const categorySelect = document.getElementById('category');
+            categorySelect.innerHTML = '<option value="">-- 大会種別を選択してください --</option>';
+            
+            const categories = [...new Set(courseMaster.map(item => item.category))];
+            
+            categories.forEach(cat => {
+                const option = document.createElement('option');
+                option.value = cat;
+                option.textContent = cat;
+                categorySelect.appendChild(option);
+            });
+        }
+
+        function setupEventListeners() {
+            document.getElementById('category').addEventListener('change', onCategoryChange);
+            document.getElementById('course').addEventListener('change', renderRanking);
+            document.getElementById('approvedOnly').addEventListener('change', renderRanking);
+        }
+
+        function onCategoryChange() {
+            const category = document.getElementById('category').value;
+            const courseSelect = document.getElementById('course');
+            
+            courseSelect.innerHTML = '<option value="">-- コースを選択してください --</option>';
+            
+            if (category) {
+                courseSelect.disabled = false;
+                const courses = courseMaster.filter(item => item.category === category);
+                courses.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.course;
+                    option.textContent = item.course;
+                    courseSelect.appendChild(option);
+                });
+            } else {
+                courseSelect.disabled = true;
+                renderRanking();
+            }
+        }
+
+        function loadData() {
+            const rankingTable = document.getElementById('rankingTable');
+            rankingTable.innerHTML = '<div class="loading">データを読み込んでいます...</div>';
+
+            // ProxyでCORS回避、またはfetchで直接取得を試みる
+            fetch(CSV_URL)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('ネットワークエラー');
+                    }
+                    return response.text();
+                })
+                .then(csvText => {
+                    Papa.parse(csvText, {
+                        header: true,
+                        complete: function(results) {
+                            allData = results.data.filter(row => row.ID && row.ID.trim() !== '');
+                            
+                            console.log('全データ件数:', allData.length);
+                            console.log('最初の3件:', allData.slice(0, 3));
+                            
+                            // CSVから大会種別とコースの組み合わせを抽出
+                            const categoryCoursePairs = new Map();
+                            allData.forEach(row => {
+                                const category = row['大会種別'];
+                                const course = row['コース'];
+                                if (category && course) {
+                                    if (!categoryCoursePairs.has(category)) {
+                                        categoryCoursePairs.set(category, new Set());
+                                    }
+                                    categoryCoursePairs.get(category).add(course);
+                                }
+                            });
+                            
+                            // courseMasterを生成
+                            courseMaster = [];
+                            categoryCoursePairs.forEach((courses, category) => {
+                                courses.forEach(course => {
+                                    courseMaster.push({ category, course });
+                                });
+                            });
+                            
+                            console.log('コースマスタ:', courseMaster);
+                            
+                            // 大会種別のドロップダウンを生成
+                            populateCategories();
+                            
+                            // Get unique versions
+                            const versions = [...new Set(allData.map(row => row['バージョン']).filter(v => v))];
+                            populateVersionFilters(versions);
+                            
+                            renderRanking();
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error('データ取得エラー:', error);
+                    rankingTable.innerHTML = `
+                        <div class="empty-state">
+                            <h2>データの読み込みに失敗しました</h2>
+                            <p>エラー: ${error.message}</p>
+                        </div>
+                    `;
+                });
+        }
+
+        function populateVersionFilters(versions) {
+            const container = document.getElementById('versionFilters');
+            container.innerHTML = '';
+            
+            versions.forEach(version => {
+                const div = document.createElement('div');
+                div.className = 'checkbox-item';
+                
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = 'version-' + version;
+                checkbox.value = version;
+                checkbox.checked = version === '0.18.0以降';
+                checkbox.addEventListener('change', onVersionFilterChange);
+                
+                const label = document.createElement('label');
+                label.htmlFor = 'version-' + version;
+                label.textContent = version;
+                
+                div.appendChild(checkbox);
+                div.appendChild(label);
+                container.appendChild(div);
+            });
+        }
+
+        function onVersionFilterChange() {
+            const checkboxes = document.querySelectorAll('#versionFilters input[type="checkbox"]');
+            selectedVersions = Array.from(checkboxes)
+                .filter(cb => cb.checked)
+                .map(cb => cb.value);
+            renderRanking();
+        }
+
+        function renderRanking() {
+            const category = document.getElementById('category').value;
+            const course = document.getElementById('course').value;
+            const approvedOnly = document.getElementById('approvedOnly').checked;
+            const rankingTable = document.getElementById('rankingTable');
+
+            if (!category || !course) {
+                rankingTable.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🎮</div>
+                        <h2>大会種別とコースを選択してください</h2>
+                        <p>上記のフィルターから表示したいランキングを選んでください</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let filteredData = allData.filter(row => 
+                row['大会種別'] === category && 
+                row['コース'] === course
+            );
+            
+            console.log('フィルター条件:', { category, course });
+            console.log('フィルター後:', filteredData.length, '件');
+            console.log('フィルター後の最初の3件:', filteredData.slice(0, 3));
+
+            // Version filter
+            if (selectedVersions.length > 0) {
+                filteredData = filteredData.filter(row => 
+                    selectedVersions.includes(row['バージョン'])
+                );
+                console.log('バージョンフィルター後:', filteredData.length, '件');
+            }
+
+            // Approval filter
+            if (approvedOnly) {
+                filteredData = filteredData.filter(row => 
+                    row['承認状態'] === 'approved'
+                );
+                console.log('承認フィルター後:', filteredData.length, '件');
+            }
+
+            // Sort by time
+            filteredData.sort((a, b) => parseFloat(a['タイム(秒)']) - parseFloat(b['タイム(秒)']));
+
+            if (filteredData.length === 0) {
+                rankingTable.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <h2>該当するレコードがありません</h2>
+                        <p>フィルター条件を変更してみてください</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>順位</th>
+                            <th>プレイヤー</th>
+                            <th>タイム</th>
+                            <th>記録日</th>
+                            <th>バージョン</th>
+                            <th>動画</th>
+                            <th>状態</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            filteredData.forEach((row, index) => {
+                const rank = index + 1;
+                const rankClass = rank <= 3 ? `rank-${rank}` : '';
+                const statusClass = row['承認状態'] === 'approved' ? 'status-approved' : 'status-pending';
+                const statusText = row['承認状態'] === 'approved' ? '承認済' : '未承認';
+
+                html += `
+                    <tr>
+                        <td class="rank ${rankClass}">${rank}</td>
+                        <td>${row['ユーザー名'] || '-'}</td>
+                        <td><strong>${row['タイム(秒)']}秒</strong></td>
+                        <td>${row['記録日'] || '-'}</td>
+                        <td>${row['バージョン'] || '-'}</td>
+                        <td>${row['リンク'] ? `<a href="${row['リンク']}" target="_blank" class="video-link">▶ 動画</a>` : '-'}</td>
+                        <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                    </tbody>
+                </table>
+            `;
+
+            rankingTable.innerHTML = html;
+        }
+
+        // Start the app
+        init();
+    </script>
+</body>
+</html>

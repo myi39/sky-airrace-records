@@ -262,6 +262,41 @@
             font-size: 1.2em;
         }
 
+        .description {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9em;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .description a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: underline;
+        }
+
+        .description a:hover {
+            color: white;
+        }
+
+        .recent-submissions {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow-x: auto;
+        }
+
+        .recent-submissions h2 {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
         @media (max-width: 768px) {
             h1 {
                 font-size: 2em;
@@ -272,11 +307,18 @@
             }
 
             table {
-                font-size: 0.9em;
+                font-size: 0.75em;
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
             }
 
             th, td {
-                padding: 10px 8px;
+                padding: 8px 6px;
+            }
+
+            .ranking-table, .recent-submissions {
+                padding: 15px;
             }
         }
     </style>
@@ -285,6 +327,10 @@
     <div class="container">
         <header>
             <h1>Skyエアレ Rankings</h1>
+            <div class="description">
+                本サイトは非公式の記録まとめページです。<br>
+                <a href="https://forms.gle/rojYVzxP28hz7vVr7" target="_blank">申請ページ</a>から投稿された記録を集計・掲載しています。
+            </div>
         </header>
 
         <div class="controls">
@@ -310,8 +356,8 @@
             </div>
 
             <div class="control-group">
-                <div class="checkbox-item" onclick="toggleApprovalFilter()">
-                    <input type="checkbox" id="approvedOnly">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="approvedOnly" onchange="renderRanking()">
                     <label for="approvedOnly">承認済のみ表示</label>
                 </div>
             </div>
@@ -322,6 +368,13 @@
                 <div class="empty-state-icon">🎮</div>
                 <h2>大会種別とコースを選択してください</h2>
                 <p>上記のフィルターから表示したいランキングを選んでください</p>
+            </div>
+        </div>
+
+        <div class="recent-submissions">
+            <h2>📝 最近の申請</h2>
+            <div id="recentSubmissionsTable">
+                <div class="loading">データを読み込んでいます...</div>
             </div>
         </div>
     </div>
@@ -336,6 +389,17 @@
         let courseMaster = [];
         let versionMaster = [];
         let selectedVersions = [];
+
+        function formatDateTime(dateString) {
+            if (!dateString) return '-';
+            const date = new Date(dateString);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hour = String(date.getHours()).padStart(2, '0');
+            const minute = String(date.getMinutes()).padStart(2, '0');
+            return `${year}/${month}/${day} ${hour}:${minute}`;
+        }
 
         function toggleApprovalFilter() {
             document.getElementById('approvedOnly').checked = !document.getElementById('approvedOnly').checked;
@@ -441,6 +505,7 @@
                         
                         populateVersionChips();
                         renderRanking();
+                        renderRecentSubmissions();
                     }
                 });
             } catch (error) {
@@ -595,6 +660,70 @@
             `;
 
             rankingTable.innerHTML = html;
+        }
+
+        function renderRecentSubmissions() {
+            const container = document.getElementById('recentSubmissionsTable');
+            
+            if (allData.length === 0) {
+                container.innerHTML = '<div class="empty-state"><p>申請データがありません</p></div>';
+                return;
+            }
+
+            // タイムスタンプでソート（新しい順）
+            const sortedData = [...allData].sort((a, b) => {
+                const dateA = new Date(a['タイムスタンプ']);
+                const dateB = new Date(b['タイムスタンプ']);
+                return dateB - dateA;
+            });
+
+            // 最新5件を取得
+            const recentData = sortedData.slice(0, 5);
+
+            let html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>申請日時</th>
+                            <th>大会種別</th>
+                            <th>コース</th>
+                            <th>プレイヤー</th>
+                            <th>タイム</th>
+                            <th>記録日</th>
+                            <th>バージョン</th>
+                            <th>動画</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            recentData.forEach(row => {
+                const username = row['ユーザー名'] || '';
+                const xHandle = username.startsWith('@') ? username.slice(1) : username;
+                const playerDisplay = xHandle ? 
+                    `<a href="https://x.com/${xHandle}" target="_blank" class="player-link">${username}</a>` : 
+                    '-';
+
+                html += `
+                    <tr>
+                        <td>${formatDateTime(row['タイムスタンプ'])}</td>
+                        <td>${row['大会種別'] || '-'}</td>
+                        <td>${row['コース名'] || '-'}</td>
+                        <td>${playerDisplay}</td>
+                        <td><strong>${row['タイム']}秒</strong></td>
+                        <td>${row['記録日'] || '-'}</td>
+                        <td>${row['バージョン'] || '-'}</td>
+                        <td>${row['リンク'] ? `<a href="${row['リンク']}" target="_blank" class="video-link">▶</a>` : '-'}</td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                    </tbody>
+                </table>
+            `;
+
+            container.innerHTML = html;
         }
 
         init();

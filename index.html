@@ -207,13 +207,32 @@
         .rank-3 { color: #CD7F32; }
 
         .video-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .video-link:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .player-link {
             color: #667eea;
             text-decoration: none;
             font-weight: 500;
             transition: color 0.2s;
         }
 
-        .video-link:hover {
+        .player-link:hover {
             color: #764ba2;
             text-decoration: underline;
         }
@@ -265,7 +284,7 @@
 <body>
     <div class="container">
         <header>
-            <h1>🏆 Skyエアレ Rankings</h1>
+            <h1>Skyエアレ Rankings</h1>
         </header>
 
         <div class="controls">
@@ -549,15 +568,22 @@
                 const rankClass = rank <= 3 ? `rank-${rank}` : '';
                 const statusClass = row['承認状態'] === 'approved' ? 'status-approved' : 'status-pending';
                 const statusText = row['承認状態'] === 'approved' ? '承認済' : '未承認';
+                
+                // プレイヤー名からXのURLを生成
+                const username = row['ユーザー名'] || '';
+                const xHandle = username.startsWith('@') ? username.slice(1) : username;
+                const playerDisplay = xHandle ? 
+                    `<a href="https://x.com/${xHandle}" target="_blank" class="player-link">${username}</a>` : 
+                    '-';
 
                 html += `
                     <tr>
                         <td class="rank ${rankClass}">${rank}</td>
-                        <td>${row['ユーザー名'] || '-'}</td>
+                        <td>${playerDisplay}</td>
                         <td><strong>${row['タイム']}秒</strong></td>
                         <td>${row['記録日'] || '-'}</td>
                         <td>${row['バージョン'] || '-'}</td>
-                        <td>${row['リンク'] ? `<a href="${row['リンク']}" target="_blank" class="video-link">▶ 動画</a>` : '-'}</td>
+                        <td>${row['リンク'] ? `<a href="${row['リンク']}" target="_blank" class="video-link">▶</a>` : '-'}</td>
                         <td><span class="status-badge ${statusClass}">${statusText}</span></td>
                     </tr>
                 `;

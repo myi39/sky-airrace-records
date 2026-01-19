@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Skyエアレ Rankings</title>
+    <title>Sky Air Race 記録まとめ</title>
     <style>
         * {
             margin: 0;
@@ -326,7 +326,7 @@
 <body>
     <div class="container">
         <header>
-            <h1>Skyエアレ Rankings</h1>
+            <h1>Sky Air Race 記録まとめ</h1>
             <div class="description">
                 本サイトは非公式の記録まとめページです。<br>
                 <a href="https://forms.gle/rojYVzxP28hz7vVr7" target="_blank">申請ページ</a>から投稿された記録を集計・掲載しています。
@@ -379,12 +379,9 @@
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <script>
-        const RECORD_TSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTcbfFqXNjOj4QahEIgU_-3HUC_8jqlZG6AlE_uDugLldxQ0cxOXGuUWncljuFergSWWIAz0ha45F6w/pub?gid=424411277&single=true&output=tsv';
-        const VERSION_MASTER_TSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTcbfFqXNjOj4QahEIgU_-3HUC_8jqlZG6AlE_uDugLldxQ0cxOXGuUWncljuFergSWWIAz0ha45F6w/pub?gid=1793598825&single=true&output=tsv';
-        const COURSE_MASTER_TSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTcbfFqXNjOj4QahEIgU_-3HUC_8jqlZG6AlE_uDugLldxQ0cxOXGuUWncljuFergSWWIAz0ha45F6w/pub?gid=2067266720&single=true&output=tsv';
-
+        const DATA_JSON_URL = './data.json';
+        
         let allData = [];
         let courseMaster = [];
         let versionMaster = [];
@@ -454,70 +451,39 @@
         async function loadData() {
             const rankingTable = document.getElementById('rankingTable');
             rankingTable.innerHTML = '<div class="loading">データを読み込んでいます...</div>';
-
+        
             try {
-                // バージョンマスタを読み込む
-                const versionResponse = await fetch(VERSION_MASTER_TSV_URL);
-                const versionText = await versionResponse.text();
-                
-                Papa.parse(versionText, {
-                    header: true,
-                    delimiter: '\t',
-                    complete: function(results) {
-                        versionMaster = results.data.filter(row => row[Object.keys(row)[0]]);
-                        console.log('バージョンマスタ:', versionMaster);
-                    }
-                });
-
-                // コースマスタを読み込む
-                const courseResponse = await fetch(COURSE_MASTER_TSV_URL);
-                const courseText = await courseResponse.text();
-                
-                Papa.parse(courseText, {
-                    header: true,
-                    delimiter: '\t',
-                    complete: function(results) {
-                        const courseData = results.data.filter(row => row['大会種別'] && row['コース名']);
-                        
-                        courseMaster = courseData.map(row => ({
-                            category: row['大会種別'],
-                            course: row['コース名']
-                        }));
-                        
-                        console.log('コースマスタ:', courseMaster);
-                        populateCategories();
-                    }
-                });
-
-                // Recordデータを読み込む
-                const recordResponse = await fetch(RECORD_TSV_URL);
-                const recordText = await recordResponse.text();
-                
-                Papa.parse(recordText, {
-                    header: true,
-                    delimiter: '\t',
-                    complete: function(results) {
-                        allData = results.data.filter(row => row.ID && row.ID.trim() !== '');
-                        
-                        console.log('全データ件数:', allData.length);
-                        console.log('最初の3件:', allData.slice(0, 3));
-                        console.log('カラム名:', Object.keys(allData[0]));
-                        
-                        populateVersionChips();
-                        renderRanking();
-                        renderRecentSubmissions();
-                    }
-                });
+                const response = await fetch(DATA_JSON_URL);
+                if (!response.ok) {
+                    throw new Error('data.json の取得に失敗しました');
+                }
+        
+                const json = await response.json();
+        
+                allData = json.records || [];
+                courseMaster = json.courseMaster || [];
+                versionMaster = json.versionMaster || [];
+        
+                console.log('records:', allData.length);
+                console.log('courseMaster:', courseMaster);
+                console.log('versionMaster:', versionMaster);
+        
+                populateCategories();
+                populateVersionChips();
+                renderRanking();
+                renderRecentSubmissions();
+        
             } catch (error) {
                 console.error('データ取得エラー:', error);
                 rankingTable.innerHTML = `
                     <div class="empty-state">
                         <h2>データの読み込みに失敗しました</h2>
-                        <p>エラー: ${error.message}</p>
+                        <p>${error.message}</p>
                     </div>
                 `;
             }
         }
+
 
         function populateVersionChips() {
             const container = document.getElementById('versionChips');

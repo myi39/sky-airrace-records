@@ -411,9 +411,9 @@
         function populateCategories() {
             const categorySelect = document.getElementById('category');
             categorySelect.innerHTML = '<option value="">-- 大会種別を選択してください --</option>';
-            
-            const categories = [...new Set(courseMaster.map(item => item.category))];
-            
+        
+            const categories = [...new Set(courseMaster.map(item => item['大会種別']))];
+        
             categories.forEach(cat => {
                 const option = document.createElement('option');
                 option.value = cat;
@@ -430,16 +430,16 @@
         function onCategoryChange() {
             const category = document.getElementById('category').value;
             const courseSelect = document.getElementById('course');
-            
+        
             courseSelect.innerHTML = '<option value="">-- コースを選択してください --</option>';
-            
+        
             if (category) {
                 courseSelect.disabled = false;
-                const courses = courseMaster.filter(item => item.category === category);
+                const courses = courseMaster.filter(item => item['大会種別'] === category);
                 courses.forEach(item => {
                     const option = document.createElement('option');
-                    option.value = item.course;
-                    option.textContent = item.course;
+                    option.value = item['コース名'];
+                    option.textContent = item['コース名'];
                     courseSelect.appendChild(option);
                 });
             } else {

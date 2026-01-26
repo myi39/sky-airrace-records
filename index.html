@@ -569,7 +569,7 @@
 
             if (approvedOnly) {
                 filteredData = filteredData.filter(row => 
-                    row['承認状態'] === 'approved'
+                row['承認状態'] === 'OK'
                 );
                 console.log('承認フィルター後:', filteredData.length, '件');
             }
@@ -606,8 +606,9 @@
             filteredData.forEach((row, index) => {
                 const rank = index + 1;
                 const rankClass = rank <= 3 ? `rank-${rank}` : '';
-                const statusClass = row['承認状態'] === 'approved' ? 'status-approved' : 'status-pending';
-                const statusText = row['承認状態'] === 'approved' ? '承認済' : '未承認';
+                const statusClass = row['承認状態'] === 'OK' ? 'status-approved' : 'status-pending';
+                const statusText = row['承認状態'] === 'OK' ? '承認済' : '未承認';
+                
                 
                 // プレイヤー名からXのURLを生成
                 const username = row['ユーザー名'] || '';

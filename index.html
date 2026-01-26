@@ -25,7 +25,7 @@
 
         header {
             text-align: center;
-            color: white;
+            color: #25598b;
             margin-bottom: 30px;
         }
 
@@ -177,8 +177,31 @@
             padding: 15px;
             text-align: left;
             font-weight: 600;
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+        }
+        
+        th:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        th.sortable::after {
+            content: ' ⇅';
+            opacity: 0.3;
+        }
+        
+        th.sort-asc::after {
+            content: ' ↑';
+            opacity: 1;
+        }
+        
+        th.sort-desc::after {
+            content: ' ↓';
+            opacity: 1;
         }
 
+        
         tbody tr {
             border-bottom: 1px solid #e0e0e0;
             transition: background-color 0.2s;
@@ -386,6 +409,7 @@
         let courseMaster = [];
         let versionMaster = [];
         let selectedVersions = [];
+        let currentSort = { column: 'タイム', order: 'asc' };
 
         function formatDate(dateString) {
             if (!dateString) return '-';
@@ -535,6 +559,25 @@
             renderRanking();
         }
 
+        function sortRanking(column) {
+            // 同じ列をクリックした場合、昇順→降順→昇順...と切り替え
+            if (currentSort.column === column) {
+                currentSort.order = currentSort.order === 'asc' ? 'desc' : 'asc';
+            } else {
+                // 別の列をクリックした場合、デフォルトの順序を設定
+                currentSort.column = column;
+                if (column === 'ユーザー名') {
+                    currentSort.order = 'asc'; // アルファベット昇順
+                } else if (column === 'タイム') {
+                    currentSort.order = 'asc'; // 昇順（速い順）
+                } else if (column === '記録日') {
+                    currentSort.order = 'desc'; // 降順（新しい順）
+                }
+            }
+            
+            renderRanking();
+        }
+        
         function renderRanking() {
             const category = document.getElementById('category').value;
             const course = document.getElementById('course').value;
@@ -573,8 +616,26 @@
                 );
                 console.log('承認フィルター後:', filteredData.length, '件');
             }
-
-            filteredData.sort((a, b) => parseFloat(a['タイム']) - parseFloat(b['タイム']));
+            
+            filteredData.sort((a, b) => {
+                let valueA, valueB;
+                
+                if (currentSort.column === 'タイム') {
+                    valueA = parseFloat(a['タイム']);
+                    valueB = parseFloat(b['タイム']);
+                } else if (currentSort.column === '記録日') {
+                    valueA = new Date(a['記録日']).getTime();
+                    valueB = new Date(b['記録日']).getTime();
+                } else if (currentSort.column === 'ユーザー名') {
+                    valueA = (a['ユーザー名'] || '').toLowerCase();
+                    valueB = (b['ユーザー名'] || '').toLowerCase();
+                    return currentSort.order === 'asc' 
+                        ? valueA.localeCompare(valueB)
+                        : valueB.localeCompare(valueA);
+                }
+                
+                return currentSort.order === 'asc' ? valueA - valueB : valueB - valueA;
+            });
 
             if (filteredData.length === 0) {
                 rankingTable.innerHTML = `
@@ -586,15 +647,14 @@
                 `;
                 return;
             }
-
+            
             let html = `
                 <table>
                     <thead>
                         <tr>
-                            <th>順位</th>
-                            <th>プレイヤー</th>
-                            <th>タイム</th>
-                            <th>記録日</th>
+                            <th class="sortable ${currentSort.column === 'ユーザー名' ? 'sort-' + currentSort.order : ''}" onclick="sortRanking('ユーザー名')">プレイヤー</th>
+                            <th class="sortable ${currentSort.column === 'タイム' ? 'sort-' + currentSort.order : ''}" onclick="sortRanking('タイム')">タイム</th>
+                            <th class="sortable ${currentSort.column === '記録日' ? 'sort-' + currentSort.order : ''}" onclick="sortRanking('記録日')">記録日</th>
                             <th>バージョン</th>
                             <th>動画</th>
                             <th>状態</th>
@@ -604,8 +664,6 @@
             `;
 
             filteredData.forEach((row, index) => {
-                const rank = index + 1;
-                const rankClass = rank <= 3 ? `rank-${rank}` : '';
                 const statusClass = row['承認状態'] === 'OK' ? 'status-approved' : 'status-pending';
                 const statusText = row['承認状態'] === 'OK' ? '承認済' : '未承認';
                 
@@ -619,7 +677,6 @@
 
                 html += `
                     <tr>
-                        <td class="rank ${rankClass}">${rank}</td>
                         <td>${playerDisplay}</td>
                         <td><strong>${row['タイム']}秒</strong></td>
                         <td>${formatDate(row['記録日'])}</td>

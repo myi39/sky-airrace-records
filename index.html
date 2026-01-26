@@ -25,7 +25,7 @@
 
         header {
             text-align: center;
-            color: #25598b;
+            color: white;
             margin-bottom: 30px;
         }
 
@@ -187,21 +187,23 @@
         }
         
         th.sortable::after {
-            content: ' ⇅';
+            content: ' ▲▼';
             opacity: 0.3;
+            font-size: 0.7em;
         }
         
         th.sort-asc::after {
-            content: ' ↑';
+            content: ' ▲';
             opacity: 1;
+            font-size: 0.8em;
         }
         
         th.sort-desc::after {
-            content: ' ↓';
+            content: ' ▼';
             opacity: 1;
+            font-size: 0.8em;
         }
 
-        
         tbody tr {
             border-bottom: 1px solid #e0e0e0;
             transition: background-color 0.2s;
@@ -287,14 +289,14 @@
 
         .description {
             text-align: center;
-            color: rgba(255, 255, 255, 0.7);
+            color: rgba(37, 89, 139, 0.7);
             font-size: 0.9em;
             margin-bottom: 20px;
             line-height: 1.6;
         }
 
         .description a {
-            color: rgba(255, 255, 255, 0.9);
+            color: rgba(37, 89, 139, 0.9);
             text-decoration: underline;
         }
 

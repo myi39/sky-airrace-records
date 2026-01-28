@@ -808,37 +808,22 @@
         renderRanking();
         }
 
-        function updateVersionCounts() {
-            const category = document.getElementById('category').value;
-            const course = document.getElementById('course').value;
-            
-            versionMaster.forEach((row, index) => {
-                const version = row[Object.keys(row)[0]];
-                
-                // フィルター条件に応じた件数を集計
-                let count = allData.filter(r => r['バージョン'] === version);
-                
-                if (category) {
-                    count = count.filter(r => r['大会種別'] === category);
-                }
-                if (course) {
-                    count = count.filter(r => r['コース名'] === course);
-                }
-                
-                const countValue = count.length;
-                
-                // チップの件数を更新
-                const chips = document.querySelectorAll('.version-chip');
-                const chip = chips[index];
-                if (chip) {
-                    const badge = chip.querySelector('.record-count');
-                    if (badge) {
-                        badge.textContent = `${countValue}件`;
-                    }
-                }
-            });
-            updateVersionCounts();
-        }
+      function updateVersionCounts() {
+        const category = document.getElementById('category').value;
+        const course = document.getElementById('course').value;
+
+        document.querySelectorAll('.version-chip').forEach(chip => {
+            const version = chip.dataset.version;
+
+            let count = allData.filter(r => r['バージョン'] === version);
+
+            if (category) count = count.filter(r => r['大会種別'] === category);
+            if (course) count = count.filter(r => r['コース名'] === course);
+
+            const badge = chip.querySelector('.record-count');
+            if (badge) badge.textContent = `${count.length}件`;
+        });
+      }
 
       function renderRanking() {
         const category = document.getElementById("category").value;
@@ -1036,7 +1021,7 @@
     </div>
 
     <footer style="text-align: center; padding: 20px; color: rgba(37, 89, 139, 0.6); font-size: 0.85em;">
-        改善・要望は<a href="https://marshmallow-qa.com/re_myi_" target="_blank" style="color: rgba(37, 89, 139, 0.8); text-decoration: underline;">Remyiのマシュマロ</a>まで。
+        改善・要望はRemyiの<a href="https://x.com/Re_myi_" target="_blank" style="color: rgba(37, 89, 139, 0.8); text-decoration: underline;"> X </a>または<a href="https://marshmallow-qa.com/re_myi_" target="_blank" style="color: rgba(37, 89, 139, 0.8); text-decoration: underline;">マシュマロ</a>まで。
     </footer>
   </body>
 </html>

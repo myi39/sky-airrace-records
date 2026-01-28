@@ -597,14 +597,14 @@
         });
       }
 
-      function setupEventListeners() {
-        document
-          .getElementById("category")
-          .addEventListener("change", onCategoryChange);
-        document
-          .getElementById("course")
-          .addEventListener("change", renderRanking);
-      }
+        function setupEventListeners() {
+            document.getElementById('category').addEventListener('change', onCategoryChange);
+            document.getElementById('course').addEventListener('change', () => {
+                updateVersionCounts();
+                updateControlCounts();
+                renderRanking();
+            });
+        }
 
       function onCategoryChange() {
         const category = document.getElementById("category").value;
@@ -631,8 +631,12 @@
             option.textContent = `${item["コース名"]} （${count}件）`;
             courseSelect.appendChild(option);
           });
+            updateVersionCounts();
+            updateControlCounts();
         } else {
           courseSelect.disabled = true;
+          updateVersionCounts();
+          updateControlCounts();
           renderRanking();
         }
       }
@@ -837,8 +841,6 @@
         }
 
       function renderRanking() {
-        updateVersionCounts();
-        updateControlCounts();
         const category = document.getElementById("category").value;
         const course = document.getElementById("course").value;
         const approvedOnly = document.getElementById("approvedOnly").checked;

@@ -1,692 +1,925 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sky Air Race 記録まとめ</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #CEE6F1 0%, #B8E0D4 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #cee6f1 0%, #b8e0d4 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
 
-        header {
-            text-align: center;
-            color: white;
-            margin-bottom: 30px;
-        }
+      header {
+        text-align: center;
+        color: white;
+        margin-bottom: 30px;
+      }
 
+      h1 {
+        font-size: 3em;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        margin-bottom: 10px;
+      }
+
+      .controls {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      }
+
+      .control-group {
+        margin-bottom: 20px;
+      }
+
+      .control-group:last-child {
+        margin-bottom: 0;
+      }
+
+      label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #333;
+      }
+
+      select {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 16px;
+        background: white;
+        cursor: pointer;
+        transition: border-color 0.3s;
+      }
+
+      select:hover {
+        border-color: #667eea;
+      }
+
+      select:focus {
+        outline: none;
+        border-color: #667eea;
+      }
+
+      .version-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 10px;
+      }
+
+      .version-chip {
+        padding: 10px 20px;
+        border: 2px solid #e0e0e0;
+        border-radius: 20px;
+        background: white;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-weight: 500;
+        user-select: none;
+      }
+
+      .version-chip:hover {
+        border-color: #667eea;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .version-chip.selected {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-color: #667eea;
+      }
+
+      .checkbox-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+
+      .checkbox-item:hover {
+        background-color: #f5f5f5;
+      }
+
+      .checkbox-item input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+      }
+
+      .checkbox-item label {
+        margin: 0;
+        cursor: pointer;
+        font-weight: 500;
+      }
+
+      /* レコード数バッジ */
+      .record-count {
+        display: inline-block;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        font-size: 0.75em;
+        font-weight: 600;
+        padding: 2px 8px;
+        border-radius: 12px;
+        margin-left: 6px;
+        min-width: 20px;
+        text-align: center;
+      }
+
+      .version-chip .record-count {
+        background: rgba(255, 255, 255, 0.3);
+        color: #333;
+        margin-left: 8px;
+      }
+
+      .version-chip.selected .record-count {
+        background: rgba(255, 255, 255, 0.9);
+        color: #667eea;
+      }
+
+      .ranking-table {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        overflow-x: auto;
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #666;
+      }
+
+      .empty-state-icon {
+        font-size: 4em;
+        margin-bottom: 20px;
+      }
+
+      .empty-state h2 {
+        font-size: 1.8em;
+        margin-bottom: 10px;
+        color: #333;
+      }
+
+      .empty-state p {
+        font-size: 1.1em;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      thead {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+      }
+
+      th {
+        padding: 15px;
+        text-align: left;
+        font-weight: 600;
+        cursor: pointer;
+        user-select: none;
+        position: relative;
+      }
+
+      th:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      th.sortable {
+        position: relative;
+        padding-right: 25px;
+      }
+
+      th.sortable::after {
+        content: "▲\A▼";
+        white-space: pre;
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        opacity: 0.3;
+        font-size: 0.6em;
+        line-height: 0.8;
+      }
+
+      th.sort-asc::after {
+        content: "▲";
+        white-space: pre;
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 0.6em;
+        line-height: 0.8;
+        background: linear-gradient(
+          to bottom,
+          currentColor 50%,
+          transparent 50%
+        );
+        -webkit-background-clip: text;
+        background-clip: text;
+        opacity: 1;
+      }
+
+      th.sort-desc::after {
+        content: "▼";
+        white-space: pre;
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 0.6em;
+        line-height: 0.8;
+        background: linear-gradient(
+          to bottom,
+          transparent 50%,
+          currentColor 50%
+        );
+        -webkit-background-clip: text;
+        background-clip: text;
+        opacity: 1;
+      }
+
+      tbody tr {
+        border-bottom: 1px solid #e0e0e0;
+        transition: background-color 0.2s;
+      }
+
+      tbody tr:hover {
+        background-color: #f5f5f5;
+      }
+
+      tbody tr:last-child {
+        border-bottom: none;
+      }
+
+      td {
+        padding: 15px;
+      }
+
+      .rank {
+        font-weight: 700;
+        font-size: 1.2em;
+        color: #667eea;
+      }
+
+      .rank-1 {
+        color: #ffd700;
+      }
+      .rank-2 {
+        color: #c0c0c0;
+      }
+      .rank-3 {
+        color: #cd7f32;
+      }
+
+      .video-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: all 0.3s;
+      }
+
+      .video-link:hover {
+        transform: scale(1.1);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+      }
+
+      .player-link {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.2s;
+      }
+
+      .player-link:hover {
+        color: #764ba2;
+        text-decoration: underline;
+      }
+
+      .status-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 0.85em;
+        font-weight: 600;
+      }
+
+      .status-approved {
+        background: #d4edda;
+        color: #155724;
+      }
+
+      .status-pending {
+        background: #fff3cd;
+        color: #856404;
+      }
+
+      .loading {
+        text-align: center;
+        padding: 40px;
+        color: #666;
+        font-size: 1.2em;
+      }
+
+      .description {
+        text-align: center;
+        color: rgba(37, 89, 139, 0.7);
+        font-size: 0.9em;
+        margin-bottom: 20px;
+        line-height: 1.6;
+      }
+
+      .description a {
+        color: rgba(37, 89, 139, 0.9);
+        text-decoration: underline;
+      }
+
+      .description a:hover {
+        color: white;
+      }
+
+      .recent-submissions {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        margin-top: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        overflow-x: auto;
+      }
+
+      .recent-submissions h2 {
+        font-size: 1.5em;
+        margin-bottom: 20px;
+        color: #333;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .control-chip {
+        padding: 8px 16px;
+        border: 2px solid #e0e0e0;
+        border-radius: 20px;
+        background: white;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-weight: 500;
+        user-select: none;
+        font-size: 0.9em;
+    }
+
+    .control-chip:hover {
+        border-color: #667eea;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .control-chip.selected {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-color: #667eea;
+    }
+
+    .control-chip .record-count {
+        background: rgba(255, 255, 255, 0.3);
+        color: #333;
+        margin-left: 6px;
+        font-size: 0.85em;
+    }
+
+    .control-chip.selected .record-count {
+        background: rgba(255, 255, 255, 0.9);
+        color: #667eea;
+    }
+
+    @media (max-width: 768px) {
+        .version-chip, .control-chip {
+            padding: 6px 12px;
+            font-size: 0.8em;
+        }
+    }
+
+      @media (max-width: 768px) {
         h1 {
-            font-size: 3em;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-            margin-bottom: 10px;
+          font-size: 2em;
         }
 
         .controls {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-
-        .control-group {
-            margin-bottom: 20px;
-        }
-
-        .control-group:last-child {
-            margin-bottom: 0;
-        }
-
-        label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: #333;
-        }
-
-        select {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 16px;
-            background: white;
-            cursor: pointer;
-            transition: border-color 0.3s;
-        }
-
-        select:hover {
-            border-color: #667eea;
-        }
-
-        select:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .version-chips {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .version-chip {
-            padding: 10px 20px;
-            border: 2px solid #e0e0e0;
-            border-radius: 20px;
-            background: white;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: 500;
-            user-select: none;
-        }
-
-        .version-chip:hover {
-            border-color: #667eea;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-
-        .version-chip.selected {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-color: #667eea;
-        }
-
-        .checkbox-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .checkbox-item:hover {
-            background-color: #f5f5f5;
-        }
-
-        .checkbox-item input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-        }
-
-        .checkbox-item label {
-            margin: 0;
-            cursor: pointer;
-            font-weight: 500;
-        }
-
-        .ranking-table {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            overflow-x: auto;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #666;
-        }
-
-        .empty-state-icon {
-            font-size: 4em;
-            margin-bottom: 20px;
-        }
-
-        .empty-state h2 {
-            font-size: 1.8em;
-            margin-bottom: 10px;
-            color: #333;
-        }
-
-        .empty-state p {
-            font-size: 1.1em;
+          padding: 20px;
         }
 
         table {
-            width: 100%;
-            border-collapse: collapse;
+          font-size: 0.75em;
+          display: block;
+          overflow-x: auto;
+          white-space: nowrap;
         }
 
-        thead {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        th {
-            padding: 15px;
-            text-align: left;
-            font-weight: 600;
-            cursor: pointer;
-            user-select: none;
-            position: relative;
-        }
-        
-        th:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-        
-        
-        th.sortable {
-            position: relative;
-            padding-right: 25px;
-        }
-        
-        th.sortable::after {
-            content: '▲\A▼';
-            white-space: pre;
-            position: absolute;
-            right: 8px;
-            top: 50%;
-            transform: translateY(-50%);
-            opacity: 0.3;
-            font-size: 0.6em;
-            line-height: 0.8;
-        }
-        
-        th.sort-asc::after {
-            content: '▲';
-            white-space: pre;
-            position: absolute;
-            right: 8px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 0.6em;
-            line-height: 0.8;
-            background: linear-gradient(to bottom, currentColor 50%, transparent 50%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            opacity: 1;
-        }
-        
-        th.sort-desc::after {
-            content: '▼';
-            white-space: pre;
-            position: absolute;
-            right: 8px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 0.6em;
-            line-height: 0.8;
-            background: linear-gradient(to bottom, transparent 50%, currentColor 50%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            opacity: 1;
-        }
-
-        tbody tr {
-            border-bottom: 1px solid #e0e0e0;
-            transition: background-color 0.2s;
-        }
-
-        tbody tr:hover {
-            background-color: #f5f5f5;
-        }
-
-        tbody tr:last-child {
-            border-bottom: none;
-        }
-
+        th,
         td {
-            padding: 15px;
+          padding: 8px 6px;
         }
 
-        .rank {
-            font-weight: 700;
-            font-size: 1.2em;
-            color: #667eea;
-        }
-
-        .rank-1 { color: #FFD700; }
-        .rank-2 { color: #C0C0C0; }
-        .rank-3 { color: #CD7F32; }
-
-        .video-link {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            font-size: 14px;
-            transition: all 0.3s;
-        }
-
-        .video-link:hover {
-            transform: scale(1.1);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-        }
-
-        .player-link {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.2s;
-        }
-
-        .player-link:hover {
-            color: #764ba2;
-            text-decoration: underline;
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 0.85em;
-            font-weight: 600;
-        }
-
-        .status-approved {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .status-pending {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #666;
-            font-size: 1.2em;
-        }
-
-        .description {
-            text-align: center;
-            color: rgba(37, 89, 139, 0.7);
-            font-size: 0.9em;
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
-
-        .description a {
-            color: rgba(37, 89, 139, 0.9);
-            text-decoration: underline;
-        }
-
-        .description a:hover {
-            color: white;
-        }
-
+        .ranking-table,
         .recent-submissions {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            margin-top: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            overflow-x: auto;
+          padding: 15px;
         }
-
-        .recent-submissions h2 {
-            font-size: 1.5em;
-            margin-bottom: 20px;
-            color: #333;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2em;
-            }
-
-            .controls {
-                padding: 20px;
-            }
-
-            table {
-                font-size: 0.75em;
-                display: block;
-                overflow-x: auto;
-                white-space: nowrap;
-            }
-
-            th, td {
-                padding: 8px 6px;
-            }
-
-            .ranking-table, .recent-submissions {
-                padding: 15px;
-            }
-        }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <header>
-            <h1>Sky Air Race 記録まとめ</h1>
-            <div class="description">
-                本サイトは非公式の記録まとめページです。<br>
-                <a href="https://forms.gle/rojYVzxP28hz7vVr7" target="_blank">申請ページ</a>から投稿された記録を集計・掲載しています。
-            </div>
-        </header>
+      <header>
+        <h1>Sky Air Race 記録まとめ</h1>
+        <div class="description">
+          本サイトは非公式の記録まとめページです。<br />
+          <a href="https://forms.gle/rojYVzxP28hz7vVr7" target="_blank"
+            >申請ページ</a
+          >から投稿された記録を集計・掲載しています。
+        </div>
+      </header>
 
-        <div class="controls">
-            <div class="control-group">
-                <label for="category">大会種別</label>
-                <select id="category">
-                    <option value="">-- 大会種別を選択してください --</option>
-                </select>
-            </div>
+      <div class="controls">
+        <div class="control-group">
+          <label for="category">大会種別</label>
+          <select id="category">
+            <option value="">-- 大会種別を選択してください --</option>
+          </select>
+        </div>
 
-            <div class="control-group">
-                <label for="course">コース</label>
-                <select id="course" disabled>
-                    <option value="">-- まず大会種別を選択してください --</option>
-                </select>
-            </div>
+        <div class="control-group">
+          <label for="course">コース</label>
+          <select id="course" disabled>
+            <option value="">-- まず大会種別を選択してください --</option>
+          </select>
+        </div>
 
-            <div class="control-group">
-                <label>バージョン</label>
-                <div class="version-chips" id="versionChips">
-                    <!-- Dynamically populated -->
-                </div>
-            </div>
-
-            <div class="control-group">
-                <div class="checkbox-item">
-                    <input type="checkbox" id="approvedOnly" onchange="renderRanking()">
-                    <label for="approvedOnly">承認済のみ表示</label>
-                </div>
+        <div class="control-group">
+            <label>操作方法</label>
+            <div class="version-chips" id="controlChips">
+                <!-- Dynamically populated -->
             </div>
         </div>
 
-        <div class="ranking-table" id="rankingTable">
-            <div class="empty-state">
-                <div class="empty-state-icon">🎮</div>
-                <h2>大会種別とコースを選択してください</h2>
-                <p>上記のフィルターから表示したいランキングを選んでください</p>
-            </div>
+        <div class="control-group">
+          <label>バージョン</label>
+          <div class="version-chips" id="versionChips">
+            <!-- Dynamically populated -->
+          </div>
         </div>
 
-        <div class="recent-submissions">
-            <h2>📝 最近の申請</h2>
-            <div id="recentSubmissionsTable">
-                <div class="loading">データを読み込んでいます...</div>
-            </div>
+        <div class="control-group">
+          <div class="checkbox-item">
+            <input
+              type="checkbox"
+              id="approvedOnly"
+              onchange="renderRanking()"
+            />
+            <label for="approvedOnly">承認済のみ表示</label>
+          </div>
         </div>
+      </div>
+
+      <div class="ranking-table" id="rankingTable">
+        <div class="empty-state">
+          <div class="empty-state-icon">🎮</div>
+          <h2>大会種別とコースを選択してください</h2>
+          <p>上記のフィルターから表示したいランキングを選んでください</p>
+        </div>
+      </div>
+
+      <div class="recent-submissions">
+        <h2>📝 最近の申請</h2>
+        <div id="recentSubmissionsTable">
+          <div class="loading">データを読み込んでいます...</div>
+        </div>
+      </div>
     </div>
 
     <script>
-        const DATA_JSON_URL = './data.json';
-        
-        let allData = [];
-        let courseMaster = [];
-        let versionMaster = [];
-        let selectedVersions = [];
-        let currentSort = { column: 'タイム', order: 'asc' };
+      const DATA_JSON_URL = "./data.json";
 
-        function formatDate(dateString) {
-            if (!dateString) return '-';
-            const date = new Date(dateString);
-            const y = date.getFullYear();
-            const m = String(date.getMonth() + 1).padStart(2, '0');
-            const d = String(date.getDate()).padStart(2, '0');
-            return `${y}/${m}/${d}`;
-        }
+      let allData = [];
+      let courseMaster = [];
+      let versionMaster = [];
+      let selectedVersions = [];
+      // let selectedVersions = []; の下に追加
+      let selectedControls = ['タッチ'];
+      const CONTROL_TYPES = {
+          'タッチ': '👆',
+          'タッチ（箒あり）': '👆(🧹)',
+          'コントローラー': '🎮',
+          'コントローラー（箒あり）': '🎮(🧹)'
+      };
+      let currentSort = { column: "タイム", order: "asc" };
 
-        function formatDateTime(dateString) {
-            if (!dateString) return '-';
-            const date = new Date(dateString);
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            const hour = String(date.getHours()).padStart(2, '0');
-            const minute = String(date.getMinutes()).padStart(2, '0');
-            return `${year}/${month}/${day} ${hour}:${minute}`;
-        }
-        
-        function toggleApprovalFilter() {
-            document.getElementById('approvedOnly').checked = !document.getElementById('approvedOnly').checked;
-            renderRanking();
-        }
+      function formatDate(dateString) {
+        if (!dateString) return "-";
+        const date = new Date(dateString);
+        const y = date.getFullYear();
+        const m = String(date.getMonth() + 1).padStart(2, "0");
+        const d = String(date.getDate()).padStart(2, "0");
+        return `${y}/${m}/${d}`;
+      }
 
-        function init() {
-            setupEventListeners();
-            loadData();
-        }
+      function formatDateTime(dateString) {
+        if (!dateString) return "-";
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        const hour = String(date.getHours()).padStart(2, "0");
+        const minute = String(date.getMinutes()).padStart(2, "0");
+        return `${year}/${month}/${day} ${hour}:${minute}`;
+      }
 
-        function populateCategories() {
-            const categorySelect = document.getElementById('category');
-            categorySelect.innerHTML = '<option value="">-- 大会種別を選択してください --</option>';
-        
-            const categories = [...new Set(courseMaster.map(item => item['大会種別']))];
-        
-            categories.forEach(cat => {
-                const option = document.createElement('option');
-                option.value = cat;
-                option.textContent = cat;
-                categorySelect.appendChild(option);
-            });
-        }
+      function toggleApprovalFilter() {
+        document.getElementById("approvedOnly").checked =
+          !document.getElementById("approvedOnly").checked;
+        renderRanking();
+      }
 
-        function setupEventListeners() {
-            document.getElementById('category').addEventListener('change', onCategoryChange);
-            document.getElementById('course').addEventListener('change', renderRanking);
-        }
+      function init() {
+        setupEventListeners();
+        loadData();
+      }
 
-        function onCategoryChange() {
-            const category = document.getElementById('category').value;
-            const courseSelect = document.getElementById('course');
-        
-            courseSelect.innerHTML = '<option value="">-- コースを選択してください --</option>';
-        
-            if (category) {
-                courseSelect.disabled = false;
-                const courses = courseMaster.filter(item => item['大会種別'] === category);
-                courses.forEach(item => {
-                    const option = document.createElement('option');
-                    option.value = item['コース名'];
-                    option.textContent = item['コース名'];
-                    courseSelect.appendChild(option);
-                });
-            } else {
-                courseSelect.disabled = true;
-                renderRanking();
-            }
-        }
+      function populateCategories() {
+        const categorySelect = document.getElementById("category");
+        categorySelect.innerHTML =
+          '<option value="">-- 大会種別を選択してください --</option>';
 
-        async function loadData() {
-            const rankingTable = document.getElementById('rankingTable');
-            rankingTable.innerHTML = '<div class="loading">データを読み込んでいます...</div>';
-        
-            try {
-                const response = await fetch(DATA_JSON_URL);
-                if (!response.ok) {
-                    throw new Error('data.json の取得に失敗しました');
-                }
-        
-                const json = await response.json();
-        
-                allData = json.records || [];
-                courseMaster = json.courseMaster || [];
-                versionMaster = json.versionMaster || [];
-        
-                console.log('records:', allData.length);
-                console.log('courseMaster:', courseMaster);
-                console.log('versionMaster:', versionMaster);
-        
-                populateCategories();
-                populateVersionChips();
-                renderRanking();
-                renderRecentSubmissions();
-        
-            } catch (error) {
-                console.error('データ取得エラー:', error);
-                rankingTable.innerHTML = `
+        const categories = [
+          ...new Set(courseMaster.map((item) => item["大会種別"])),
+        ];
+
+        categories.forEach((cat) => {
+          // この大会種別の記録数を集計
+          const count = allData.filter((row) => row["大会種別"] === cat).length;
+
+          const option = document.createElement("option");
+          option.value = cat;
+          option.textContent = `${cat} （${count}件）`;
+          categorySelect.appendChild(option);
+        });
+      }
+
+      function setupEventListeners() {
+        document
+          .getElementById("category")
+          .addEventListener("change", onCategoryChange);
+        document
+          .getElementById("course")
+          .addEventListener("change", renderRanking);
+      }
+
+      function onCategoryChange() {
+        const category = document.getElementById("category").value;
+        const courseSelect = document.getElementById("course");
+
+        courseSelect.innerHTML =
+          '<option value="">-- コースを選択してください --</option>';
+
+        if (category) {
+          courseSelect.disabled = false;
+          const courses = courseMaster.filter(
+            (item) => item["大会種別"] === category,
+          );
+          courses.forEach((item) => {
+            // このコースの記録数を集計
+            const count = allData.filter(
+              (row) =>
+                row["大会種別"] === category &&
+                row["コース名"] === item["コース名"],
+            ).length;
+
+            const option = document.createElement("option");
+            option.value = item["コース名"];
+            option.textContent = `${item["コース名"]} （${count}件）`;
+            courseSelect.appendChild(option);
+          });
+        } else {
+          courseSelect.disabled = true;
+          renderRanking();
+        }
+      }
+
+      async function loadData() {
+        const rankingTable = document.getElementById("rankingTable");
+        rankingTable.innerHTML =
+          '<div class="loading">データを読み込んでいます...</div>';
+
+        try {
+          const response = await fetch(DATA_JSON_URL);
+          if (!response.ok) {
+            throw new Error("data.json の取得に失敗しました");
+          }
+
+          const json = await response.json();
+
+          allData = json.records || [];
+          courseMaster = json.courseMaster || [];
+          versionMaster = json.versionMaster || [];
+
+          console.log("records:", allData.length);
+          console.log("courseMaster:", courseMaster);
+          console.log("versionMaster:", versionMaster);
+
+          populateCategories();
+          populateVersionChips();
+          populateControlChips();
+          renderRanking();
+          renderRecentSubmissions();
+        } catch (error) {
+          console.error("データ取得エラー:", error);
+          rankingTable.innerHTML = `
                     <div class="empty-state">
                         <h2>データの読み込みに失敗しました</h2>
                         <p>${error.message}</p>
                     </div>
                 `;
-            }
         }
+      }
 
+      function populateVersionChips() {
+        const container = document.getElementById("versionChips");
+        container.innerHTML = "";
 
-        function populateVersionChips() {
-            const container = document.getElementById('versionChips');
+        // バージョンマスタの最後の行が最新バージョン
+        const versions = versionMaster
+          .map((row) => row[Object.keys(row)[0]])
+          .reverse();
+        const latestVersion = versions[0];
+
+        console.log("バージョン一覧（新→古）:", versions);
+        console.log("最新バージョン:", latestVersion);
+
+        versions.forEach((version) => {
+          // このバージョンの記録数を集計
+          const count = allData.filter(
+            (row) => row["バージョン"] === version,
+          ).length;
+
+          const chip = document.createElement("div");
+          chip.className = "version-chip";
+          chip.innerHTML = `${version}<span class="record-count">${count}</span>`;
+          chip.dataset.version = version;
+
+          // 最新バージョンをデフォルトで選択
+          if (version === latestVersion) {
+            chip.classList.add("selected");
+            selectedVersions.push(version);
+          }
+
+          chip.addEventListener("click", () =>
+            toggleVersionChip(chip, version),
+          );
+          container.appendChild(chip);
+        });
+      }
+
+        function populateControlChips() {
+            const container = document.getElementById('controlChips');
             container.innerHTML = '';
             
-            // バージョンマスタの最後の行が最新バージョン
-            const versions = versionMaster.map(row => row[Object.keys(row)[0]]).reverse();
-            const latestVersion = versions[0];
-            
-            console.log('バージョン一覧（新→古）:', versions);
-            console.log('最新バージョン:', latestVersion);
-            
-            versions.forEach(version => {
-                const chip = document.createElement('div');
-                chip.className = 'version-chip';
-                chip.textContent = version;
-                chip.dataset.version = version;
+            Object.entries(CONTROL_TYPES).forEach(([controlType, icon]) => {
+                const count = allData.filter(row => row['操作方法'] === controlType).length;
                 
-                // 最新バージョンをデフォルトで選択
-                if (version === latestVersion) {
+                const chip = document.createElement('div');
+                chip.className = 'control-chip';
+                chip.innerHTML = `${icon}<span class="record-count">${count}件</span>`;
+                chip.dataset.control = controlType;
+                
+                // デフォルトで「タッチ」を選択
+                if (controlType === 'タッチ') {
                     chip.classList.add('selected');
-                    selectedVersions.push(version);
                 }
                 
-                chip.addEventListener('click', () => toggleVersionChip(chip, version));
+                chip.addEventListener('click', () => toggleControlChip(chip, controlType));
                 container.appendChild(chip);
             });
         }
 
-        function toggleVersionChip(chip, version) {
+        function toggleControlChip(chip, controlType) {
             chip.classList.toggle('selected');
             
-            if (selectedVersions.includes(version)) {
-                selectedVersions = selectedVersions.filter(v => v !== version);
+            if (selectedControls.includes(controlType)) {
+                selectedControls = selectedControls.filter(c => c !== controlType);
             } else {
-                selectedVersions.push(version);
+                selectedControls.push(controlType);
             }
             
-            console.log('選択中のバージョン:', selectedVersions);
+            console.log('選択中の操作方法:', selectedControls);
             renderRanking();
         }
 
-        function sortRanking(column) {
-            // 同じ列をクリックした場合、昇順→降順→昇順...と切り替え
-            if (currentSort.column === column) {
-                currentSort.order = currentSort.order === 'asc' ? 'desc' : 'asc';
-            } else {
-                // 別の列をクリックした場合、デフォルトの順序を設定
-                currentSort.column = column;
-                if (column === 'ユーザー名') {
-                    currentSort.order = 'asc'; // アルファベット昇順
-                } else if (column === 'タイム') {
-                    currentSort.order = 'asc'; // 昇順（速い順）
-                } else if (column === '記録日') {
-                    currentSort.order = 'asc'; // 昇順（古い順）
-                }
-            }
-            
-            renderRanking();
-        }
-        
-        function renderRanking() {
+        function updateControlCounts() {
             const category = document.getElementById('category').value;
             const course = document.getElementById('course').value;
-            const approvedOnly = document.getElementById('approvedOnly').checked;
-            const rankingTable = document.getElementById('rankingTable');
+            
+            Object.keys(CONTROL_TYPES).forEach(controlType => {
+                let count = allData.filter(r => r['操作方法'] === controlType);
+                
+                if (category) {
+                    count = count.filter(r => r['大会種別'] === category);
+                }
+                if (course) {
+                    count = count.filter(r => r['コース名'] === course);
+                }
+                
+                const countValue = count.length;
+                
+                const chip = document.querySelector(`.control-chip[data-control="${controlType}"]`);
+                if (chip) {
+                    const badge = chip.querySelector('.record-count');
+                    if (badge) {
+                        badge.textContent = `${countValue}件`;
+                    }
+                }
+            });
+        }
 
-            if (!category || !course) {
-                rankingTable.innerHTML = `
+      function toggleVersionChip(chip, version) {
+        chip.classList.toggle("selected");
+
+        if (selectedVersions.includes(version)) {
+          selectedVersions = selectedVersions.filter((v) => v !== version);
+        } else {
+          selectedVersions.push(version);
+        }
+
+        console.log("選択中のバージョン:", selectedVersions);
+        renderRanking();
+      }
+
+      function sortRanking(column) {
+        // 同じ列をクリックした場合、昇順→降順→昇順...と切り替え
+        if (currentSort.column === column) {
+            currentSort.order = currentSort.order === "asc" ? "desc" : "asc";
+        } else {
+          // 別の列をクリックした場合、デフォルトの順序を設定
+            currentSort.column = column;
+            if (column === "ユーザー名") {
+            currentSort.order = "asc"; // アルファベット昇順
+            } else if (column === "タイム") {
+            currentSort.order = "asc"; // 昇順（速い順）
+            } else if (column === "記録日") {
+              currentSort.order = "asc"; // 昇順（古い順）
+            }
+        }
+
+        renderRanking();
+        }
+
+        function updateVersionCounts() {
+            const category = document.getElementById('category').value;
+            const course = document.getElementById('course').value;
+            
+            versionMaster.forEach((row, index) => {
+                const version = row[Object.keys(row)[0]];
+                
+                // フィルター条件に応じた件数を集計
+                let count = allData.filter(r => r['バージョン'] === version);
+                
+                if (category) {
+                    count = count.filter(r => r['大会種別'] === category);
+                }
+                if (course) {
+                    count = count.filter(r => r['コース名'] === course);
+                }
+                
+                const countValue = count.length;
+                
+                // チップの件数を更新
+                const chips = document.querySelectorAll('.version-chip');
+                const chip = chips[index];
+                if (chip) {
+                    const badge = chip.querySelector('.record-count');
+                    if (badge) {
+                        badge.textContent = `${countValue}件`;
+                    }
+                }
+            });
+            updateVersionCounts();
+        }
+
+      function renderRanking() {
+        updateVersionCounts();
+        updateControlCounts();
+        const category = document.getElementById("category").value;
+        const course = document.getElementById("course").value;
+        const approvedOnly = document.getElementById("approvedOnly").checked;
+        const rankingTable = document.getElementById("rankingTable");
+
+        if (!category || !course) {
+          rankingTable.innerHTML = `
                     <div class="empty-state">
                         <div class="empty-state-icon">🎮</div>
                         <h2>大会種別とコースを選択してください</h2>
                         <p>上記のフィルターから表示したいランキングを選んでください</p>
                     </div>
                 `;
-                return;
-            }
+          return;
+        }
 
-            let filteredData = allData.filter(row => 
-                row['大会種別'] === category && 
-                row['コース名'] === course
+        let filteredData = allData.filter(
+          (row) => row["大会種別"] === category && row["コース名"] === course,
+        );
+
+        console.log("フィルター条件:", { category, course });
+        console.log("フィルター後:", filteredData.length, "件");
+
+        if (selectedVersions.length > 0) {
+          filteredData = filteredData.filter((row) =>
+            selectedVersions.includes(row["バージョン"]),
+          );
+          console.log("バージョンフィルター後:", filteredData.length, "件");
+        }
+        if (selectedControls.length > 0) {
+            filteredData = filteredData.filter(row => 
+                selectedControls.includes(row['操作方法'])
             );
-            
-            console.log('フィルター条件:', { category, course });
-            console.log('フィルター後:', filteredData.length, '件');
+            console.log('操作方法フィルター後:', filteredData.length, '件');
+        }
 
-            if (selectedVersions.length > 0) {
-                filteredData = filteredData.filter(row => 
-                    selectedVersions.includes(row['バージョン'])
-                );
-                console.log('バージョンフィルター後:', filteredData.length, '件');
-            }
+        if (approvedOnly) {
+          filteredData = filteredData.filter((row) => row["承認状態"] === "OK");
+          console.log("承認フィルター後:", filteredData.length, "件");
+        }
 
-            if (approvedOnly) {
-                filteredData = filteredData.filter(row => 
-                row['承認状態'] === 'OK'
-                );
-                console.log('承認フィルター後:', filteredData.length, '件');
-            }
-            
-            filteredData.sort((a, b) => {
-                let valueA, valueB;
-                
-                if (currentSort.column === 'タイム') {
-                    valueA = parseFloat(a['タイム']);
-                    valueB = parseFloat(b['タイム']);
-                } else if (currentSort.column === '記録日') {
-                    valueA = new Date(a['記録日']).getTime();
-                    valueB = new Date(b['記録日']).getTime();
-                } else if (currentSort.column === 'ユーザー名') {
-                    valueA = (a['ユーザー名'] || '').toLowerCase();
-                    valueB = (b['ユーザー名'] || '').toLowerCase();
-                    return currentSort.order === 'asc' 
-                        ? valueA.localeCompare(valueB)
-                        : valueB.localeCompare(valueA);
-                }
-                
-                return currentSort.order === 'asc' ? valueA - valueB : valueB - valueA;
-            });
+        filteredData.sort((a, b) => {
+          let valueA, valueB;
 
-            if (filteredData.length === 0) {
-                rankingTable.innerHTML = `
+          if (currentSort.column === "タイム") {
+            valueA = parseFloat(a["タイム"]);
+            valueB = parseFloat(b["タイム"]);
+          } else if (currentSort.column === "記録日") {
+            valueA = new Date(a["記録日"]).getTime();
+            valueB = new Date(b["記録日"]).getTime();
+          } else if (currentSort.column === "ユーザー名") {
+            valueA = (a["ユーザー名"] || "").toLowerCase();
+            valueB = (b["ユーザー名"] || "").toLowerCase();
+            return currentSort.order === "asc"
+              ? valueA.localeCompare(valueB)
+              : valueB.localeCompare(valueA);
+          }
+
+          return currentSort.order === "asc"
+            ? valueA - valueB
+            : valueB - valueA;
+        });
+
+        if (filteredData.length === 0) {
+          rankingTable.innerHTML = `
                     <div class="empty-state">
                         <div class="empty-state-icon">📭</div>
                         <h2>該当するレコードがありません</h2>
                         <p>フィルター条件を変更してみてください</p>
                     </div>
                 `;
-                return;
-            }
-            
-            let html = `
+          return;
+        }
+
+        let html = `
                 <table>
                     <thead>
                         <tr>
-                            <th class="sortable ${currentSort.column === 'ユーザー名' ? 'sort-' + currentSort.order : ''}" onclick="sortRanking('ユーザー名')">プレイヤー</th>
-                            <th class="sortable ${currentSort.column === 'タイム' ? 'sort-' + currentSort.order : ''}" onclick="sortRanking('タイム')">タイム</th>
-                            <th class="sortable ${currentSort.column === '記録日' ? 'sort-' + currentSort.order : ''}" onclick="sortRanking('記録日')">記録日</th>
+                            <th class="sortable ${currentSort.column === "ユーザー名" ? "sort-" + currentSort.order : ""}" onclick="sortRanking('ユーザー名')">プレイヤー</th>
+                            <th class="sortable ${currentSort.column === "タイム" ? "sort-" + currentSort.order : ""}" onclick="sortRanking('タイム')">タイム</th>
+                            <th class="sortable ${currentSort.column === "記録日" ? "sort-" + currentSort.order : ""}" onclick="sortRanking('記録日')">記録日</th>
                             <th>バージョン</th>
                             <th>動画</th>
                             <th>状態</th>
@@ -695,57 +928,60 @@
                     <tbody>
             `;
 
-            filteredData.forEach((row, index) => {
-                const statusClass = row['承認状態'] === 'OK' ? 'status-approved' : 'status-pending';
-                const statusText = row['承認状態'] === 'OK' ? '承認済' : '未承認';
-                
-                
-                // プレイヤー名からXのURLを生成
-                const username = row['ユーザー名'] || '';
-                const xHandle = username.startsWith('@') ? username.slice(1) : username;
-                const playerDisplay = xHandle ? 
-                    `<a href="https://x.com/${xHandle}" target="_blank" class="player-link">${username}</a>` : 
-                    '-';
+        filteredData.forEach((row, index) => {
+          const statusClass =
+            row["承認状態"] === "OK" ? "status-approved" : "status-pending";
+          const statusText = row["承認状態"] === "OK" ? "承認済" : "未承認";
 
-                html += `
+          // プレイヤー名からXのURLを生成
+          const username = row["ユーザー名"] || "";
+          const xHandle = username.startsWith("@")
+            ? username.slice(1)
+            : username;
+          const playerDisplay = xHandle
+            ? `<a href="https://x.com/${xHandle}" target="_blank" class="player-link">${username}</a>`
+            : "-";
+
+          html += `
                     <tr>
                         <td>${playerDisplay}</td>
-                        <td><strong>${row['タイム']}秒</strong></td>
-                        <td>${formatDate(row['記録日'])}</td>
-                        <td>${row['バージョン'] || '-'}</td>
-                        <td>${row['リンク'] ? `<a href="${row['リンク']}" target="_blank" class="video-link">▶</a>` : '-'}</td>
+                        <td><strong>${row["タイム"]}秒</strong></td>
+                        <td>${formatDate(row["記録日"])}</td>
+                        <td>${row["バージョン"] || "-"}</td>
+                        <td>${row["リンク"] ? `<a href="${row["リンク"]}" target="_blank" class="video-link">▶</a>` : "-"}</td>
                         <td><span class="status-badge ${statusClass}">${statusText}</span></td>
                     </tr>
                 `;
-            });
+        });
 
-            html += `
+        html += `
                     </tbody>
                 </table>
             `;
 
-            rankingTable.innerHTML = html;
+        rankingTable.innerHTML = html;
+      }
+
+      function renderRecentSubmissions() {
+        const container = document.getElementById("recentSubmissionsTable");
+
+        if (allData.length === 0) {
+          container.innerHTML =
+            '<div class="empty-state"><p>申請データがありません</p></div>';
+          return;
         }
 
-        function renderRecentSubmissions() {
-            const container = document.getElementById('recentSubmissionsTable');
-            
-            if (allData.length === 0) {
-                container.innerHTML = '<div class="empty-state"><p>申請データがありません</p></div>';
-                return;
-            }
+        // タイムスタンプでソート（新しい順）
+        const sortedData = [...allData].sort((a, b) => {
+          const dateA = new Date(a["タイムスタンプ"]);
+          const dateB = new Date(b["タイムスタンプ"]);
+          return dateB - dateA;
+        });
 
-            // タイムスタンプでソート（新しい順）
-            const sortedData = [...allData].sort((a, b) => {
-                const dateA = new Date(a['タイムスタンプ']);
-                const dateB = new Date(b['タイムスタンプ']);
-                return dateB - dateA;
-            });
+        // 最新5件を取得
+        const recentData = sortedData.slice(0, 5);
 
-            // 最新5件を取得
-            const recentData = sortedData.slice(0, 5);
-
-            let html = `
+        let html = `
                 <table>
                     <thead>
                         <tr>
@@ -762,36 +998,43 @@
                     <tbody>
             `;
 
-            recentData.forEach(row => {
-                const username = row['ユーザー名'] || '';
-                const xHandle = username.startsWith('@') ? username.slice(1) : username;
-                const playerDisplay = xHandle ? 
-                    `<a href="https://x.com/${xHandle}" target="_blank" class="player-link">${username}</a>` : 
-                    '-';
+        recentData.forEach((row) => {
+          const username = row["ユーザー名"] || "";
+          const xHandle = username.startsWith("@")
+            ? username.slice(1)
+            : username;
+          const playerDisplay = xHandle
+            ? `<a href="https://x.com/${xHandle}" target="_blank" class="player-link">${username}</a>`
+            : "-";
 
-                html += `
+          html += `
                     <tr>
-                        <td>${formatDateTime(row['タイムスタンプ'])}</td>
-                        <td>${row['大会種別'] || '-'}</td>
-                        <td>${row['コース名'] || '-'}</td>
+                        <td>${formatDateTime(row["タイムスタンプ"])}</td>
+                        <td>${row["大会種別"] || "-"}</td>
+                        <td>${row["コース名"] || "-"}</td>
                         <td>${playerDisplay}</td>
-                        <td><strong>${row['タイム']}秒</strong></td>
-                        <td>${formatDate(row['記録日'])}</td>
-                        <td>${row['バージョン'] || '-'}</td>
-                        <td>${row['リンク'] ? `<a href="${row['リンク']}" target="_blank" class="video-link">▶</a>` : '-'}</td>
+                        <td><strong>${row["タイム"]}秒</strong></td>
+                        <td>${formatDate(row["記録日"])}</td>
+                        <td>${row["バージョン"] || "-"}</td>
+                        <td>${row["リンク"] ? `<a href="${row["リンク"]}" target="_blank" class="video-link">▶</a>` : "-"}</td>
                     </tr>
                 `;
-            });
+        });
 
-            html += `
+        html += `
                     </tbody>
                 </table>
             `;
 
-            container.innerHTML = html;
-        }
+        container.innerHTML = html;
+      }
 
-        init();
+      init();
     </script>
-</body>
+    </div>
+
+    <footer style="text-align: center; padding: 20px; color: rgba(37, 89, 139, 0.6); font-size: 0.85em;">
+        改善・要望は<a href="https://marshmallow-qa.com/re_myi_" target="_blank" style="color: rgba(37, 89, 139, 0.8); text-decoration: underline;">Remyiのマシュマロ</a>まで。
+    </footer>
+  </body>
 </html>

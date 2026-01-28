@@ -530,7 +530,7 @@
     </div>
 
     <script>
-      const DATA_JSON_URL = "./data.json";
+      const DATA_JSON_URL = "./data.json?ts=${Date.now()}";
 
       let allData = [];
       let courseMaster = [];
@@ -646,7 +646,8 @@
           '<div class="loading">データを読み込んでいます...</div>';
 
         try {
-          const response = await fetch(DATA_JSON_URL);
+          const url = `./data.json?ts=${Date.now()}`;
+          const response = await fetch(url, {cache: 'no-store'});
           if (!response.ok) {
             throw new Error("data.json の取得に失敗しました");
           }

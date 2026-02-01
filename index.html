@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sky Air Race 記録まとめ</title>
     <style>
+      /* ========================================
+         基本設定
+         ======================================== */
       * {
         margin: 0;
         padding: 0;
@@ -23,6 +26,9 @@
         margin: 0 auto;
       }
 
+      /* ========================================
+         ヘッダー
+         ======================================== */
       header {
         text-align: center;
         color: white;
@@ -35,6 +41,25 @@
         margin-bottom: 10px;
       }
 
+      .description {
+        color: rgba(37, 89, 139, 0.7);
+        font-size: 0.9em;
+        margin-bottom: 20px;
+        line-height: 1.6;
+      }
+
+      .description a {
+        color: rgba(37, 89, 139, 0.9);
+        text-decoration: underline;
+      }
+
+      .description a:hover {
+        color: white;
+      }
+
+      /* ========================================
+         コントロールパネル
+         ======================================== */
       .controls {
         background: white;
         border-radius: 15px;
@@ -58,6 +83,7 @@
         color: #333;
       }
 
+      /* セレクトボックス */
       select {
         width: 100%;
         padding: 12px;
@@ -78,14 +104,15 @@
         border-color: #667eea;
       }
 
-      .version-chips {
+      /* チップ共通スタイル（バージョン・操作方法） */
+      .chip-container {
         display: flex;
         flex-wrap: wrap;
         gap: 10px;
         margin-top: 10px;
       }
 
-      .version-chip {
+      .chip {
         padding: 10px 20px;
         border: 2px solid #e0e0e0;
         border-radius: 20px;
@@ -96,18 +123,38 @@
         user-select: none;
       }
 
-      .version-chip:hover {
+      .chip:hover {
         border-color: #667eea;
         transform: translateY(-2px);
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       }
 
-      .version-chip.selected {
+      .chip.selected {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
         border-color: #667eea;
       }
 
+      /* レコード数バッジ */
+      .record-count {
+        display: inline-block;
+        background: rgba(102, 126, 234, 0.2);
+        color: #333;
+        font-size: 0.85em;
+        font-weight: 600;
+        padding: 2px 8px;
+        border-radius: 12px;
+        margin-left: 6px;
+        min-width: 20px;
+        text-align: center;
+      }
+
+      .chip.selected .record-count {
+        background: rgba(255, 255, 255, 0.9);
+        color: #667eea;
+      }
+
+      /* チェックボックス */
       .checkbox-item {
         display: flex;
         align-items: center;
@@ -134,32 +181,10 @@
         font-weight: 500;
       }
 
-      /* レコード数バッジ */
-      .record-count {
-        display: inline-block;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        font-size: 0.75em;
-        font-weight: 600;
-        padding: 2px 8px;
-        border-radius: 12px;
-        margin-left: 6px;
-        min-width: 20px;
-        text-align: center;
-      }
-
-      .version-chip .record-count {
-        background: rgba(255, 255, 255, 0.3);
-        color: #333;
-        margin-left: 8px;
-      }
-
-      .version-chip.selected .record-count {
-        background: rgba(255, 255, 255, 0.9);
-        color: #667eea;
-      }
-
-      .ranking-table {
+      /* ========================================
+         テーブル共通
+         ======================================== */
+      .table-container {
         background: white;
         border-radius: 15px;
         padding: 25px;
@@ -167,6 +192,145 @@
         overflow-x: auto;
       }
 
+      .recent-submissions {
+        margin-top: 20px;
+      }
+
+      .recent-submissions h2 {
+        font-size: 1.5em;
+        margin-bottom: 20px;
+        color: #333;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      thead {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+      }
+
+      th {
+        padding: 15px;
+        text-align: left;
+        font-weight: 600;
+        user-select: none;
+        position: relative;
+      }
+
+      /* ソート可能なヘッダー */
+      th.sortable {
+        cursor: pointer;
+        padding-right: 30px;
+      }
+
+      th.sortable:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      /* ソートインジケーター */
+      th.sortable::after {
+        white-space: pre;
+        content: "▲\A▼";
+        line-height: 0.8;
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        opacity: 0.3;
+        font-size: 0.9em;
+      }
+
+      th.sort-asc::after {
+        content: "▲";
+        opacity: 1;
+      }
+
+      th.sort-desc::after {
+        content: "▼";
+        opacity: 1;
+      }
+
+      tbody tr {
+        border-bottom: 1px solid #e0e0e0;
+        transition: background-color 0.2s;
+      }
+
+      tbody tr:hover {
+        background-color: #f5f5f5;
+      }
+
+      tbody tr:last-child {
+        border-bottom: none;
+      }
+
+      td {
+        padding: 15px;
+      }
+
+      /* ========================================
+         特殊要素
+         ======================================== */
+      /* プレイヤーリンク */
+      .player-link {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.2s;
+      }
+
+      .player-link:hover {
+        color: #764ba2;
+        text-decoration: underline;
+      }
+
+      /* 動画リンクボタン */
+      .video-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: all 0.3s;
+      }
+
+      .video-link:hover {
+        transform: scale(1.1);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+      }
+
+      /* ステータスバッジ */
+      .status-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 0.85em;
+        font-weight: 600;
+      }
+
+      .status-approved {
+        background: #d4edda;
+        color: #155724;
+      }
+
+      .status-pending {
+        background: #fff3cd;
+        color: #856404;
+      }
+
+      /* ========================================
+         空状態・ローディング
+         ======================================== */
       .empty-state {
         text-align: center;
         padding: 60px 20px;
@@ -188,166 +352,6 @@
         font-size: 1.1em;
       }
 
-      table {
-        width: 100%;
-        border-collapse: collapse;
-      }
-
-      thead {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-      }
-
-      th {
-        padding: 15px;
-        text-align: left;
-        font-weight: 600;
-        cursor: pointer;
-        user-select: none;
-        position: relative;
-      }
-
-      th:hover {
-        background: rgba(255, 255, 255, 0.1);
-      }
-
-      th.sortable {
-        position: relative;
-        padding-right: 25px;
-      }
-
-      th.sortable::after {
-        content: "▲\A▼";
-        white-space: pre;
-        position: absolute;
-        right: 8px;
-        top: 50%;
-        transform: translateY(-50%);
-        opacity: 0.3;
-        font-size: 0.6em;
-        line-height: 0.8;
-      }
-
-      th.sort-asc::after {
-        content: "▲";
-        white-space: pre;
-        position: absolute;
-        right: 8px;
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: 0.6em;
-        line-height: 0.8;
-        background: linear-gradient(
-          to bottom,
-          currentColor 50%,
-          transparent 50%
-        );
-        -webkit-background-clip: text;
-        background-clip: text;
-        opacity: 1;
-      }
-
-      th.sort-desc::after {
-        content: "▼";
-        white-space: pre;
-        position: absolute;
-        right: 8px;
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: 0.6em;
-        line-height: 0.8;
-        background: linear-gradient(
-          to bottom,
-          transparent 50%,
-          currentColor 50%
-        );
-        -webkit-background-clip: text;
-        background-clip: text;
-        opacity: 1;
-      }
-
-      tbody tr {
-        border-bottom: 1px solid #e0e0e0;
-        transition: background-color 0.2s;
-      }
-
-      tbody tr:hover {
-        background-color: #f5f5f5;
-      }
-
-      tbody tr:last-child {
-        border-bottom: none;
-      }
-
-      td {
-        padding: 15px;
-      }
-
-      .rank {
-        font-weight: 700;
-        font-size: 1.2em;
-        color: #667eea;
-      }
-
-      .rank-1 {
-        color: #ffd700;
-      }
-      .rank-2 {
-        color: #c0c0c0;
-      }
-      .rank-3 {
-        color: #cd7f32;
-      }
-
-      .video-link {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 32px;
-        height: 32px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        text-decoration: none;
-        border-radius: 8px;
-        font-size: 14px;
-        transition: all 0.3s;
-      }
-
-      .video-link:hover {
-        transform: scale(1.1);
-        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-      }
-
-      .player-link {
-        color: #667eea;
-        text-decoration: none;
-        font-weight: 500;
-        transition: color 0.2s;
-      }
-
-      .player-link:hover {
-        color: #764ba2;
-        text-decoration: underline;
-      }
-
-      .status-badge {
-        display: inline-block;
-        padding: 4px 12px;
-        border-radius: 12px;
-        font-size: 0.85em;
-        font-weight: 600;
-      }
-
-      .status-approved {
-        background: #d4edda;
-        color: #155724;
-      }
-
-      .status-pending {
-        background: #fff3cd;
-        color: #856404;
-      }
-
       .loading {
         text-align: center;
         padding: 40px;
@@ -355,83 +359,24 @@
         font-size: 1.2em;
       }
 
-      .description {
+      /* ========================================
+         フッター
+         ======================================== */
+      footer {
         text-align: center;
-        color: rgba(37, 89, 139, 0.7);
-        font-size: 0.9em;
-        margin-bottom: 20px;
-        line-height: 1.6;
+        padding: 20px;
+        color: rgba(37, 89, 139, 0.6);
+        font-size: 0.85em;
       }
 
-      .description a {
-        color: rgba(37, 89, 139, 0.9);
+      footer a {
+        color: rgba(37, 89, 139, 0.8);
         text-decoration: underline;
       }
 
-      .description a:hover {
-        color: white;
-      }
-
-      .recent-submissions {
-        background: white;
-        border-radius: 15px;
-        padding: 25px;
-        margin-top: 20px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        overflow-x: auto;
-      }
-
-      .recent-submissions h2 {
-        font-size: 1.5em;
-        margin-bottom: 20px;
-        color: #333;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-      .control-chip {
-        padding: 8px 16px;
-        border: 2px solid #e0e0e0;
-        border-radius: 20px;
-        background: white;
-        cursor: pointer;
-        transition: all 0.3s;
-        font-weight: 500;
-        user-select: none;
-        font-size: 0.9em;
-    }
-
-    .control-chip:hover {
-        border-color: #667eea;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-
-    .control-chip.selected {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        border-color: #667eea;
-    }
-
-    .control-chip .record-count {
-        background: rgba(255, 255, 255, 0.3);
-        color: #333;
-        margin-left: 6px;
-        font-size: 0.85em;
-    }
-
-    .control-chip.selected .record-count {
-        background: rgba(255, 255, 255, 0.9);
-        color: #667eea;
-    }
-
-    @media (max-width: 768px) {
-        .version-chip, .control-chip {
-            padding: 6px 12px;
-            font-size: 0.8em;
-        }
-    }
-
+      /* ========================================
+         レスポンシブ
+         ======================================== */
       @media (max-width: 768px) {
         h1 {
           font-size: 2em;
@@ -439,6 +384,11 @@
 
         .controls {
           padding: 20px;
+        }
+
+        .chip {
+          padding: 6px 12px;
+          font-size: 0.85em;
         }
 
         table {
@@ -453,7 +403,7 @@
           padding: 8px 6px;
         }
 
-        .ranking-table,
+        .table-container,
         .recent-submissions {
           padding: 15px;
         }
@@ -462,17 +412,21 @@
   </head>
   <body>
     <div class="container">
+      <!-- ヘッダー -->
       <header>
         <h1>Sky Air Race 記録まとめ</h1>
         <div class="description">
           本サイトは非公式の記録まとめページです。<br />
-          <a href="https://forms.gle/rojYVzxP28hz7vVr7" target="_blank"
-            >申請ページ</a
-          >から投稿された記録を集計・掲載しています。
+          <a href="https://forms.gle/rojYVzxP28hz7vVr7" target="_blank">
+            申請ページ
+          </a>
+          から投稿された記録を集計・掲載しています。
         </div>
       </header>
 
+      <!-- フィルターコントロール -->
       <div class="controls">
+        <!-- 大会種別 -->
         <div class="control-group">
           <label for="category">大会種別</label>
           <select id="category">
@@ -480,6 +434,7 @@
           </select>
         </div>
 
+        <!-- コース -->
         <div class="control-group">
           <label for="course">コース</label>
           <select id="course" disabled>
@@ -487,33 +442,29 @@
           </select>
         </div>
 
+        <!-- 操作方法 -->
         <div class="control-group">
-            <label>操作方法</label>
-            <div class="version-chips" id="controlChips">
-                <!-- Dynamically populated -->
-            </div>
+          <label>操作方法</label>
+          <div class="chip-container" id="controlChips"></div>
         </div>
 
+        <!-- バージョン -->
         <div class="control-group">
           <label>バージョン</label>
-          <div class="version-chips" id="versionChips">
-            <!-- Dynamically populated -->
-          </div>
+          <div class="chip-container" id="versionChips"></div>
         </div>
 
+        <!-- 承認済のみ表示 -->
         <div class="control-group">
           <div class="checkbox-item">
-            <input
-              type="checkbox"
-              id="approvedOnly"
-              onchange="renderRanking()"
-            />
+            <input type="checkbox" id="approvedOnly" />
             <label for="approvedOnly">承認済のみ表示</label>
           </div>
         </div>
       </div>
 
-      <div class="ranking-table" id="rankingTable">
+      <!-- ランキングテーブル -->
+      <div class="table-container" id="rankingTable">
         <div class="empty-state">
           <div class="empty-state-icon">🎮</div>
           <h2>大会種別とコースを選択してください</h2>
@@ -521,7 +472,8 @@
         </div>
       </div>
 
-      <div class="recent-submissions">
+      <!-- 最近の申請 -->
+      <div class="table-container recent-submissions">
         <h2>📝 最近の申請</h2>
         <div id="recentSubmissionsTable">
           <div class="loading">データを読み込んでいます...</div>
@@ -529,22 +481,54 @@
       </div>
     </div>
 
+    <!-- フッター -->
+    <footer>
+      改善・要望はRemyiの
+      <a href="https://x.com/Re_myi_" target="_blank">X</a>
+      または
+      <a href="https://marshmallow-qa.com/re_myi_" target="_blank"
+        >マシュマロ</a
+      >
+      まで。
+    </footer>
+
     <script>
-      const DATA_JSON_URL = "./data.json?ts=${Date.now()}";
+      // ========================================
+      // グローバル変数
+      // ========================================
 
-      let allData = [];
-      let courseMaster = [];
-      let versionMaster = [];
-      let selectedVersions = [];
-      let selectedControls = ['タッチ'];
-      const CONTROL_TYPES = {
-          'タッチ': '👆',
-          'タッチ（箒あり）': '👆(🧹)',
-          'コントローラー': '🎮',
-          'コントローラー（箒あり）': '🎮(🧹)'
+      // データ格納用
+      let allData = []; // 全記録データ
+      let courseMaster = []; // コースマスターデータ
+      let versionMaster = []; // バージョンマスターデータ
+
+      // フィルター選択状態
+      let selectedVersions = []; // 選択中のバージョン
+      let selectedControls = ["タッチ"]; // 選択中の操作方法（デフォルト：タッチ）
+
+      // ソート状態
+      let currentSort = {
+        column: "タイム", // ソート対象列
+        order: "asc", // 昇順/降順
       };
-      let currentSort = { column: "タイム", order: "asc" };
 
+      // 操作方法の表示用アイコンマッピング
+      const CONTROL_TYPES = {
+        タッチ: "👆",
+        "タッチ（箒あり）": "👆(🧹)",
+        コントローラー: "🎮",
+        "コントローラー（箒あり）": "🎮(🧹)",
+      };
+
+      // ========================================
+      // ユーティリティ関数
+      // ========================================
+
+      /**
+       * 日付を YYYY/MM/DD 形式にフォーマット
+       * @param {string} dateString - ISO形式の日付文字列
+       * @returns {string} フォーマットされた日付
+       */
       function formatDate(dateString) {
         if (!dateString) return "-";
         const date = new Date(dateString);
@@ -554,6 +538,11 @@
         return `${y}/${m}/${d}`;
       }
 
+      /**
+       * 日時を YYYY/MM/DD HH:MM 形式にフォーマット
+       * @param {string} dateString - ISO形式の日付文字列
+       * @returns {string} フォーマットされた日時
+       */
       function formatDateTime(dateString) {
         if (!dateString) return "-";
         const date = new Date(dateString);
@@ -565,22 +554,103 @@
         return `${year}/${month}/${day} ${hour}:${minute}`;
       }
 
-      function toggleApprovalFilter() {
-        document.getElementById("approvedOnly").checked =
-          !document.getElementById("approvedOnly").checked;
-        renderRanking();
-      }
+      // ========================================
+      // 初期化
+      // ========================================
 
+      /**
+       * アプリケーション初期化
+       */
       function init() {
         setupEventListeners();
         loadData();
       }
 
+      /**
+       * イベントリスナー設定
+       */
+      function setupEventListeners() {
+        // 大会種別変更時
+        document
+          .getElementById("category")
+          .addEventListener("change", onCategoryChange);
+
+        // コース変更時
+        document.getElementById("course").addEventListener("change", () => {
+          updateVersionCounts();
+          updateControlCounts();
+          renderRanking();
+        });
+
+        // 承認済のみ表示チェックボックス変更時
+        document
+          .getElementById("approvedOnly")
+          .addEventListener("change", renderRanking);
+      }
+
+      // ========================================
+      // データ読み込み
+      // ========================================
+
+      /**
+       * data.jsonからデータを読み込む
+       */
+      async function loadData() {
+        const rankingTable = document.getElementById("rankingTable");
+        rankingTable.innerHTML =
+          '<div class="loading">データを読み込んでいます...</div>';
+
+        try {
+          // キャッシュ回避のためタイムスタンプ付与
+          const url = `./data.json?ts=${Date.now()}`;
+          const response = await fetch(url, { cache: "no-store" });
+
+          if (!response.ok) {
+            throw new Error("data.json の取得に失敗しました");
+          }
+
+          const json = await response.json();
+
+          // データを格納
+          allData = json.records || [];
+          courseMaster = json.courseMaster || [];
+          versionMaster = json.versionMaster || [];
+
+          console.log("データ読み込み完了");
+          console.log("- records:", allData.length);
+          console.log("- courseMaster:", courseMaster.length);
+          console.log("- versionMaster:", versionMaster.length);
+
+          // UI初期化
+          populateCategories();
+          populateVersionChips();
+          populateControlChips();
+          renderRanking();
+          renderRecentSubmissions();
+        } catch (error) {
+          console.error("データ取得エラー:", error);
+          rankingTable.innerHTML = `
+            <div class="empty-state">
+              <h2>データの読み込みに失敗しました</h2>
+              <p>${error.message}</p>
+            </div>
+          `;
+        }
+      }
+
+      // ========================================
+      // UI生成（セレクトボックス・チップ）
+      // ========================================
+
+      /**
+       * 大会種別セレクトボックスを生成
+       */
       function populateCategories() {
         const categorySelect = document.getElementById("category");
         categorySelect.innerHTML =
           '<option value="">-- 大会種別を選択してください --</option>';
 
+        // 重複なしで大会種別を取得
         const categories = [
           ...new Set(courseMaster.map((item) => item["大会種別"])),
         ];
@@ -596,15 +666,9 @@
         });
       }
 
-        function setupEventListeners() {
-            document.getElementById('category').addEventListener('change', onCategoryChange);
-            document.getElementById('course').addEventListener('change', () => {
-                updateVersionCounts();
-                updateControlCounts();
-                renderRanking();
-            });
-        }
-
+      /**
+       * 大会種別変更時の処理
+       */
       function onCategoryChange() {
         const category = document.getElementById("category").value;
         const courseSelect = document.getElementById("course");
@@ -614,9 +678,12 @@
 
         if (category) {
           courseSelect.disabled = false;
+
+          // 選択された大会種別のコースを取得
           const courses = courseMaster.filter(
             (item) => item["大会種別"] === category,
           );
+
           courses.forEach((item) => {
             // このコースの記録数を集計
             const count = allData.filter(
@@ -630,8 +697,9 @@
             option.textContent = `${item["コース名"]} （${count}件）`;
             courseSelect.appendChild(option);
           });
-            updateVersionCounts();
-            updateControlCounts();
+
+          updateVersionCounts();
+          updateControlCounts();
         } else {
           courseSelect.disabled = true;
           updateVersionCounts();
@@ -640,69 +708,31 @@
         }
       }
 
-      async function loadData() {
-        const rankingTable = document.getElementById("rankingTable");
-        rankingTable.innerHTML =
-          '<div class="loading">データを読み込んでいます...</div>';
-
-        try {
-          const url = `./data.json?ts=${Date.now()}`;
-          const response = await fetch(url, {cache: 'no-store'});
-          if (!response.ok) {
-            throw new Error("data.json の取得に失敗しました");
-          }
-
-          const json = await response.json();
-
-          allData = json.records || [];
-          courseMaster = json.courseMaster || [];
-          versionMaster = json.versionMaster || [];
-
-          console.log("records:", allData.length);
-          console.log("courseMaster:", courseMaster);
-          console.log("versionMaster:", versionMaster);
-
-          populateCategories();
-          populateVersionChips();
-          populateControlChips();
-          renderRanking();
-          renderRecentSubmissions();
-        } catch (error) {
-          console.error("データ取得エラー:", error);
-          rankingTable.innerHTML = `
-                    <div class="empty-state">
-                        <h2>データの読み込みに失敗しました</h2>
-                        <p>${error.message}</p>
-                    </div>
-                `;
-        }
-      }
-
+      /**
+       * バージョンチップを生成
+       */
       function populateVersionChips() {
         const container = document.getElementById("versionChips");
         container.innerHTML = "";
 
-        // バージョンマスタの最後の行が最新バージョン
+        // バージョンマスタを新しい順に並べる
         const versions = versionMaster
           .map((row) => row[Object.keys(row)[0]])
           .reverse();
-        const latestVersion = versions[0];
 
-        console.log("バージョン一覧（新→古）:", versions);
-        console.log("最新バージョン:", latestVersion);
+        const latestVersion = versions[0]; // 最新バージョン
 
         versions.forEach((version) => {
-          // このバージョンの記録数を集計
           const count = allData.filter(
             (row) => row["バージョン"] === version,
           ).length;
 
           const chip = document.createElement("div");
-          chip.className = "version-chip";
-          chip.innerHTML = `${version}<span class="record-count">${count}</span>`;
+          chip.className = "chip";
+          chip.innerHTML = `${version}<span class="record-count">${count}件</span>`;
           chip.dataset.version = version;
 
-          // 最新バージョンをデフォルトで選択
+          // 最新バージョンをデフォルト選択
           if (version === latestVersion) {
             chip.classList.add("selected");
             selectedVersions.push(version);
@@ -715,67 +745,44 @@
         });
       }
 
-        function populateControlChips() {
-            const container = document.getElementById('controlChips');
-            container.innerHTML = '';
-            
-            Object.entries(CONTROL_TYPES).forEach(([controlType, icon]) => {
-                const count = allData.filter(row => row['操作方法'] === controlType).length;
-                
-                const chip = document.createElement('div');
-                chip.className = 'control-chip';
-                chip.innerHTML = `${icon}<span class="record-count">${count}件</span>`;
-                chip.dataset.control = controlType;
-                
-                // デフォルトで「タッチ」を選択
-                if (controlType === 'タッチ') {
-                    chip.classList.add('selected');
-                }
-                
-                chip.addEventListener('click', () => toggleControlChip(chip, controlType));
-                container.appendChild(chip);
-            });
-        }
+      /**
+       * 操作方法チップを生成
+       */
+      function populateControlChips() {
+        const container = document.getElementById("controlChips");
+        container.innerHTML = "";
 
-        function toggleControlChip(chip, controlType) {
-            chip.classList.toggle('selected');
-            
-            if (selectedControls.includes(controlType)) {
-                selectedControls = selectedControls.filter(c => c !== controlType);
-            } else {
-                selectedControls.push(controlType);
-            }
-            
-            console.log('選択中の操作方法:', selectedControls);
-            renderRanking();
-        }
+        Object.entries(CONTROL_TYPES).forEach(([controlType, icon]) => {
+          const count = allData.filter(
+            (row) => row["操作方法"] === controlType,
+          ).length;
 
-        function updateControlCounts() {
-            const category = document.getElementById('category').value;
-            const course = document.getElementById('course').value;
-            
-            Object.keys(CONTROL_TYPES).forEach(controlType => {
-                let count = allData.filter(r => r['操作方法'] === controlType);
-                
-                if (category) {
-                    count = count.filter(r => r['大会種別'] === category);
-                }
-                if (course) {
-                    count = count.filter(r => r['コース名'] === course);
-                }
-                
-                const countValue = count.length;
-                
-                const chip = document.querySelector(`.control-chip[data-control="${controlType}"]`);
-                if (chip) {
-                    const badge = chip.querySelector('.record-count');
-                    if (badge) {
-                        badge.textContent = `${countValue}件`;
-                    }
-                }
-            });
-        }
+          const chip = document.createElement("div");
+          chip.className = "chip";
+          chip.innerHTML = `${icon}<span class="record-count">${count}件</span>`;
+          chip.dataset.control = controlType;
 
+          // デフォルトで「タッチ」を選択
+          if (controlType === "タッチ") {
+            chip.classList.add("selected");
+          }
+
+          chip.addEventListener("click", () =>
+            toggleControlChip(chip, controlType),
+          );
+          container.appendChild(chip);
+        });
+      }
+
+      // ========================================
+      // フィルター操作
+      // ========================================
+
+      /**
+       * バージョンチップの選択切り替え
+       * @param {HTMLElement} chip - クリックされたチップ要素
+       * @param {string} version - バージョン名
+       */
       function toggleVersionChip(chip, version) {
         chip.classList.toggle("selected");
 
@@ -785,88 +792,140 @@
           selectedVersions.push(version);
         }
 
-        console.log("選択中のバージョン:", selectedVersions);
         renderRanking();
       }
 
-      function sortRanking(column) {
-        // 同じ列をクリックした場合、昇順→降順→昇順...と切り替え
-        if (currentSort.column === column) {
-            currentSort.order = currentSort.order === "asc" ? "desc" : "asc";
+      /**
+       * 操作方法チップの選択切り替え
+       * @param {HTMLElement} chip - クリックされたチップ要素
+       * @param {string} controlType - 操作方法
+       */
+      function toggleControlChip(chip, controlType) {
+        chip.classList.toggle("selected");
+
+        if (selectedControls.includes(controlType)) {
+          selectedControls = selectedControls.filter((c) => c !== controlType);
         } else {
-          // 別の列をクリックした場合、デフォルトの順序を設定
-            currentSort.column = column;
-            if (column === "ユーザー名") {
-            currentSort.order = "asc"; // アルファベット昇順
-            } else if (column === "タイム") {
-            currentSort.order = "asc"; // 昇順（速い順）
-            } else if (column === "記録日") {
-              currentSort.order = "asc"; // 昇順（古い順）
-            }
+          selectedControls.push(controlType);
         }
 
         renderRanking();
-        }
+      }
 
+      /**
+       * バージョンチップの件数表示を更新
+       */
       function updateVersionCounts() {
-        const category = document.getElementById('category').value;
-        const course = document.getElementById('course').value;
+        const category = document.getElementById("category").value;
+        const course = document.getElementById("course").value;
 
-        document.querySelectorAll('.version-chip').forEach(chip => {
-            const version = chip.dataset.version;
+        document.querySelectorAll(".chip[data-version]").forEach((chip) => {
+          const version = chip.dataset.version;
 
-            let count = allData.filter(r => r['バージョン'] === version);
+          // フィルター条件に応じて件数を計算
+          let count = allData.filter((r) => r["バージョン"] === version);
+          if (category) count = count.filter((r) => r["大会種別"] === category);
+          if (course) count = count.filter((r) => r["コース名"] === course);
 
-            if (category) count = count.filter(r => r['大会種別'] === category);
-            if (course) count = count.filter(r => r['コース名'] === course);
-
-            const badge = chip.querySelector('.record-count');
-            if (badge) badge.textContent = `${count.length}件`;
+          const badge = chip.querySelector(".record-count");
+          if (badge) badge.textContent = `${count.length}件`;
         });
       }
 
+      /**
+       * 操作方法チップの件数表示を更新
+       */
+      function updateControlCounts() {
+        const category = document.getElementById("category").value;
+        const course = document.getElementById("course").value;
+
+        Object.keys(CONTROL_TYPES).forEach((controlType) => {
+          // フィルター条件に応じて件数を計算
+          let count = allData.filter((r) => r["操作方法"] === controlType);
+          if (category) count = count.filter((r) => r["大会種別"] === category);
+          if (course) count = count.filter((r) => r["コース名"] === course);
+
+          const chip = document.querySelector(
+            `.chip[data-control="${controlType}"]`,
+          );
+          if (chip) {
+            const badge = chip.querySelector(".record-count");
+            if (badge) badge.textContent = `${count.length}件`;
+          }
+        });
+      }
+
+      // ========================================
+      // ソート機能
+      // ========================================
+
+      /**
+       * ランキングのソート処理
+       * @param {string} column - ソート対象の列名
+       */
+      function sortRanking(column) {
+        // 同じ列をクリックした場合は昇順/降順を切り替え
+        if (currentSort.column === column) {
+          currentSort.order = currentSort.order === "asc" ? "desc" : "asc";
+        } else {
+          // 別の列の場合、デフォルトの順序を設定
+          currentSort.column = column;
+          currentSort.order = column === "タイム" ? "asc" : "asc";
+        }
+
+        renderRanking();
+      }
+
+      // ========================================
+      // レンダリング
+      // ========================================
+
+      /**
+       * ランキングテーブルをレンダリング
+       */
       function renderRanking() {
         const category = document.getElementById("category").value;
         const course = document.getElementById("course").value;
         const approvedOnly = document.getElementById("approvedOnly").checked;
         const rankingTable = document.getElementById("rankingTable");
 
+        // 大会種別・コース未選択時
         if (!category || !course) {
           rankingTable.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">🎮</div>
-                        <h2>大会種別とコースを選択してください</h2>
-                        <p>上記のフィルターから表示したいランキングを選んでください</p>
-                    </div>
-                `;
+            <div class="empty-state">
+              <div class="empty-state-icon">🎮</div>
+              <h2>大会種別とコースを選択してください</h2>
+              <p>上記のフィルターから表示したいランキングを選んでください</p>
+            </div>
+          `;
           return;
         }
 
+        // データフィルタリング
         let filteredData = allData.filter(
           (row) => row["大会種別"] === category && row["コース名"] === course,
         );
 
-        console.log("フィルター条件:", { category, course });
-        console.log("フィルター後:", filteredData.length, "件");
-
+        // バージョンフィルター
         if (selectedVersions.length > 0) {
           filteredData = filteredData.filter((row) =>
             selectedVersions.includes(row["バージョン"]),
           );
-          console.log("バージョンフィルター後:", filteredData.length, "件");
-        }
-        if (selectedControls.length > 0) {
-            filteredData = filteredData.filter(row => 
-                selectedControls.includes(row['操作方法'])
-            );
-            console.log('操作方法フィルター後:', filteredData.length, '件');
         }
 
+        // 操作方法フィルター
+        if (selectedControls.length > 0) {
+          filteredData = filteredData.filter((row) =>
+            selectedControls.includes(row["操作方法"]),
+          );
+        }
+
+        // 承認済のみフィルター
         if (approvedOnly) {
           filteredData = filteredData.filter((row) => row["承認状態"] === "OK");
-          console.log("承認フィルター後:", filteredData.length, "件");
         }
 
+        // ソート処理
         filteredData.sort((a, b) => {
           let valueA, valueB;
 
@@ -889,33 +948,38 @@
             : valueB - valueA;
         });
 
+        // データなしの場合
         if (filteredData.length === 0) {
           rankingTable.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">📭</div>
-                        <h2>該当するレコードがありません</h2>
-                        <p>フィルター条件を変更してみてください</p>
-                    </div>
-                `;
+            <div class="empty-state">
+              <div class="empty-state-icon">📭</div>
+              <h2>該当するレコードがありません</h2>
+              <p>フィルター条件を変更してみてください</p>
+            </div>
+          `;
           return;
         }
 
+        // テーブル生成
         let html = `
-                <table>
-                    <thead>
-                        <tr>
-                            <th class="sortable ${currentSort.column === "ユーザー名" ? "sort-" + currentSort.order : ""}" onclick="sortRanking('ユーザー名')">プレイヤー</th>
-                            <th class="sortable ${currentSort.column === "タイム" ? "sort-" + currentSort.order : ""}" onclick="sortRanking('タイム')">タイム</th>
-                            <th class="sortable ${currentSort.column === "記録日" ? "sort-" + currentSort.order : ""}" onclick="sortRanking('記録日')">記録日</th>
-                            <th>バージョン</th>
-                            <th>動画</th>
-                            <th>状態</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
+          <table>
+            <thead>
+              <tr>
+                <th class="sortable ${currentSort.column === "ユーザー名" ? "sort-" + currentSort.order : ""}" 
+                    onclick="sortRanking('ユーザー名')">プレイヤー</th>
+                <th class="sortable ${currentSort.column === "タイム" ? "sort-" + currentSort.order : ""}" 
+                    onclick="sortRanking('タイム')">タイム</th>
+                <th class="sortable ${currentSort.column === "記録日" ? "sort-" + currentSort.order : ""}" 
+                    onclick="sortRanking('記録日')">記録日</th>
+                <th>バージョン</th>
+                <th>動画</th>
+                <th>状態</th>
+              </tr>
+            </thead>
+            <tbody>
+        `;
 
-        filteredData.forEach((row, index) => {
+        filteredData.forEach((row) => {
           const statusClass =
             row["承認状態"] === "OK" ? "status-approved" : "status-pending";
           const statusText = row["承認状態"] === "OK" ? "承認済" : "未承認";
@@ -930,25 +994,28 @@
             : "-";
 
           html += `
-                    <tr>
-                        <td>${playerDisplay}</td>
-                        <td><strong>${row["タイム"]}秒</strong></td>
-                        <td>${formatDate(row["記録日"])}</td>
-                        <td>${row["バージョン"] || "-"}</td>
-                        <td>${row["リンク"] ? `<a href="${row["リンク"]}" target="_blank" class="video-link">▶</a>` : "-"}</td>
-                        <td><span class="status-badge ${statusClass}">${statusText}</span></td>
-                    </tr>
-                `;
+            <tr>
+              <td>${playerDisplay}</td>
+              <td><strong>${row["タイム"]}秒</strong></td>
+              <td>${formatDate(row["記録日"])}</td>
+              <td>${row["バージョン"] || "-"}</td>
+              <td>${row["リンク"] ? `<a href="${row["リンク"]}" target="_blank" class="video-link">▶</a>` : "-"}</td>
+              <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+            </tr>
+          `;
         });
 
         html += `
-                    </tbody>
-                </table>
-            `;
+            </tbody>
+          </table>
+        `;
 
         rankingTable.innerHTML = html;
       }
 
+      /**
+       * 最近の申請テーブルをレンダリング
+       */
       function renderRecentSubmissions() {
         const container = document.getElementById("recentSubmissionsTable");
 
@@ -969,21 +1036,21 @@
         const recentData = sortedData.slice(0, 5);
 
         let html = `
-                <table>
-                    <thead>
-                        <tr>
-                            <th>申請日時</th>
-                            <th>大会種別</th>
-                            <th>コース</th>
-                            <th>プレイヤー</th>
-                            <th>タイム</th>
-                            <th>記録日</th>
-                            <th>バージョン</th>
-                            <th>動画</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
+          <table>
+            <thead>
+              <tr>
+                <th>申請日時</th>
+                <th>大会種別</th>
+                <th>コース</th>
+                <th>プレイヤー</th>
+                <th>タイム</th>
+                <th>記録日</th>
+                <th>バージョン</th>
+                <th>動画</th>
+              </tr>
+            </thead>
+            <tbody>
+        `;
 
         recentData.forEach((row) => {
           const username = row["ユーザー名"] || "";
@@ -995,33 +1062,31 @@
             : "-";
 
           html += `
-                    <tr>
-                        <td>${formatDateTime(row["タイムスタンプ"])}</td>
-                        <td>${row["大会種別"] || "-"}</td>
-                        <td>${row["コース名"] || "-"}</td>
-                        <td>${playerDisplay}</td>
-                        <td><strong>${row["タイム"]}秒</strong></td>
-                        <td>${formatDate(row["記録日"])}</td>
-                        <td>${row["バージョン"] || "-"}</td>
-                        <td>${row["リンク"] ? `<a href="${row["リンク"]}" target="_blank" class="video-link">▶</a>` : "-"}</td>
-                    </tr>
-                `;
+            <tr>
+              <td>${formatDateTime(row["タイムスタンプ"])}</td>
+              <td>${row["大会種別"] || "-"}</td>
+              <td>${row["コース名"] || "-"}</td>
+              <td>${playerDisplay}</td>
+              <td><strong>${row["タイム"]}秒</strong></td>
+              <td>${formatDate(row["記録日"])}</td>
+              <td>${row["バージョン"] || "-"}</td>
+              <td>${row["リンク"] ? `<a href="${row["リンク"]}" target="_blank" class="video-link">▶</a>` : "-"}</td>
+            </tr>
+          `;
         });
 
         html += `
-                    </tbody>
-                </table>
-            `;
+            </tbody>
+          </table>
+        `;
 
         container.innerHTML = html;
       }
 
+      // ========================================
+      // アプリケーション起動
+      // ========================================
       init();
     </script>
-    </div>
-
-    <footer style="text-align: center; padding: 20px; color: rgba(37, 89, 139, 0.6); font-size: 0.85em;">
-        改善・要望はRemyiの<a href="https://x.com/Re_myi_" target="_blank" style="color: rgba(37, 89, 139, 0.8); text-decoration: underline;"> X </a>または<a href="https://marshmallow-qa.com/re_myi_" target="_blank" style="color: rgba(37, 89, 139, 0.8); text-decoration: underline;">マシュマロ</a>まで。
-    </footer>
   </body>
 </html>

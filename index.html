@@ -58,13 +58,30 @@
       }
 
       /* ========================================
+         セクション見出し
+         ======================================== */
+      .section-title {
+        font-size: 1.6em;
+        margin-bottom: 20px;
+        color: #333;
+        font-weight: 700;
+        padding-left: 10px;
+        border-left: 5px solid #667eea;
+      }
+
+      .section-divider {
+        border: none;
+        border-top: 2px solid #e0e0e0;
+        margin: 25px 0;
+      }
+
+      /* ========================================
          コントロールパネル
          ======================================== */
       .controls {
         background: white;
         border-radius: 15px;
         padding: 25px;
-        margin-bottom: 20px;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
       }
 
@@ -104,56 +121,6 @@
         border-color: #667eea;
       }
 
-      /* チップ共通スタイル（バージョン・操作方法） */
-      .chip-container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-top: 10px;
-      }
-
-      .chip {
-        padding: 10px 20px;
-        border: 2px solid #e0e0e0;
-        border-radius: 20px;
-        background: white;
-        cursor: pointer;
-        transition: all 0.3s;
-        font-weight: 500;
-        user-select: none;
-      }
-
-      .chip:hover {
-        border-color: #667eea;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      }
-
-      .chip.selected {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        border-color: #667eea;
-      }
-
-      /* レコード数バッジ */
-      .record-count {
-        display: inline-block;
-        background: rgba(102, 126, 234, 0.2);
-        color: #333;
-        font-size: 0.85em;
-        font-weight: 600;
-        padding: 2px 8px;
-        border-radius: 12px;
-        margin-left: 6px;
-        min-width: 20px;
-        text-align: center;
-      }
-
-      .chip.selected .record-count {
-        background: rgba(255, 255, 255, 0.9);
-        color: #667eea;
-      }
-
       /* チェックボックス */
       .checkbox-item {
         display: flex;
@@ -182,6 +149,230 @@
       }
 
       /* ========================================
+         アコーディオンフィルター（詳細フィルター）
+         ======================================== */
+      .advanced-filter {
+        margin-top: 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+
+      .filter-header {
+        background: linear-gradient(135deg, #f5f5f5 0%, #ececec 100%);
+        padding: 6px 20px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        user-select: none;
+        transition: background 0.3s;
+      }
+
+      .filter-header:hover {
+        background: linear-gradient(135deg, #ececec 0%, #e0e0e0 100%);
+      }
+
+      .filter-header-title {
+        font-weight: 600;
+        color: #333;
+        font-size: 1em;
+      }
+
+      .filter-toggle-icon {
+        font-size: 2.5em;
+        font-weight: bold;
+        color: #333;
+        line-height: 1;
+        width: 1.2em;
+        text-align: center;
+        flex-shrink: 0;
+      }
+
+      .filter-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease-out;
+      }
+
+      .filter-content.open {
+        max-height: 700px;
+      }
+
+      .filter-inner {
+        padding: 20px;
+        background: white;
+      }
+
+      /* フィルター内のボタングループ */
+      .filter-group {
+        margin-bottom: 20px;
+      }
+
+      .filter-group:last-of-type {
+        margin-bottom: 15px;
+      }
+
+      .filter-group-label {
+        font-weight: 600;
+        color: #555;
+        margin-bottom: 10px;
+        display: block;
+        font-size: 0.95em;
+      }
+
+      .filter-options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      /* フィルターボタン（チップスタイル） */
+      .filter-chip {
+        padding: 10px 18px;
+        border: 2px solid #e0e0e0;
+        border-radius: 20px;
+        background: white;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-weight: 500;
+        user-select: none;
+        font-size: 0.9em;
+      }
+
+      .filter-chip:hover {
+        border-color: #667eea;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .filter-chip.selected {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-color: #667eea;
+      }
+
+      /* ラジオボタンを非表示にする */
+      .approval-radio {
+        display: none;
+      }
+
+      /* 承認フィルター（シンプルラジオボタン） */
+      .approval-options {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .approval-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        user-select: none;
+      }
+
+      /* 丸のインケーター */
+      .approval-indicator {
+        width: 20px;
+        height: 20px;
+        border: 2px solid #e0e0e0;
+        border-radius: 50%;
+        background: white;
+        flex-shrink: 0;
+        transition: all 0.2s;
+        position: relative;
+      }
+
+      .approval-item:hover .approval-indicator {
+        border-color: #667eea;
+      }
+
+      /* 選択時：紫で埋まる */
+      .approval-item.selected .approval-indicator {
+        border-color: #667eea;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+
+      /* 選択時：中央に白い小さな丸 */
+      .approval-item.selected .approval-indicator::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: white;
+      }
+
+      .approval-label {
+        font-weight: 500;
+        font-size: 0.95em;
+        color: #333;
+      }
+
+      /* フィルター内のアイコン表示 */
+      .filter-icon {
+        font-size: 1.1em;
+        margin-right: 5px;
+      }
+
+      /* フィルター適用ボタンとエラー */
+      .filter-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid #e0e0e0;
+      }
+
+      .filter-record-count {
+        font-size: 0.9em;
+        color: #666;
+        text-align: center;
+      }
+
+      .filter-record-count.error {
+        color: #d32f2f;
+      }
+
+      .filter-error {
+        color: #d32f2f;
+        font-size: 0.85em;
+        text-align: center;
+        display: none;
+      }
+
+      .filter-error.show {
+        display: block;
+      }
+
+      .apply-filter-btn {
+        padding: 12px 24px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1em;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .apply-filter-btn:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+      }
+
+      .apply-filter-btn:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+      }
+
+      /* ========================================
          テーブル共通
          ======================================== */
       .table-container {
@@ -196,15 +387,6 @@
         margin-top: 20px;
       }
 
-      .recent-submissions h2 {
-        font-size: 1.5em;
-        margin-bottom: 20px;
-        color: #333;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-
       table {
         width: 100%;
         border-collapse: collapse;
@@ -216,17 +398,18 @@
       }
 
       th {
-        padding: 15px;
+        padding: 12px 8px;
         text-align: left;
         font-weight: 600;
         user-select: none;
         position: relative;
+        font-size: 0.9em;
       }
 
       /* ソート可能なヘッダー */
       th.sortable {
         cursor: pointer;
-        padding-right: 30px;
+        padding-right: 25px;
       }
 
       th.sortable:hover {
@@ -239,11 +422,11 @@
         content: "▲\A▼";
         line-height: 0.8;
         position: absolute;
-        right: 10px;
+        right: 6px;
         top: 50%;
         transform: translateY(-50%);
         opacity: 0.3;
-        font-size: 0.9em;
+        font-size: 0.8em;
       }
 
       th.sort-asc::after {
@@ -270,7 +453,14 @@
       }
 
       td {
-        padding: 15px;
+        padding: 10px 8px;
+        font-size: 0.85em;
+      }
+
+      /* 操作方法列のスタイル */
+      td.control-cell {
+        font-size: 1.1em;
+        text-align: center;
       }
 
       /* ========================================
@@ -294,13 +484,13 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        width: 32px;
-        height: 32px;
+        width: 28px;
+        height: 28px;
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
         text-decoration: none;
-        border-radius: 8px;
-        font-size: 14px;
+        border-radius: 6px;
+        font-size: 12px;
         transition: all 0.3s;
       }
 
@@ -312,9 +502,9 @@
       /* ステータスバッジ */
       .status-badge {
         display: inline-block;
-        padding: 4px 12px;
-        border-radius: 12px;
-        font-size: 0.85em;
+        padding: 3px 10px;
+        border-radius: 10px;
+        font-size: 0.8em;
         font-weight: 600;
       }
 
@@ -386,13 +576,12 @@
           padding: 20px;
         }
 
-        .chip {
-          padding: 6px 12px;
-          font-size: 0.85em;
+        .section-title {
+          font-size: 1.4em;
         }
 
         table {
-          font-size: 0.75em;
+          font-size: 0.7em;
           display: block;
           overflow-x: auto;
           white-space: nowrap;
@@ -400,7 +589,7 @@
 
         th,
         td {
-          padding: 8px 6px;
+          padding: 6px 4px;
         }
 
         .table-container,
@@ -424,8 +613,11 @@
         </div>
       </header>
 
-      <!-- フィルターコントロール -->
+      <!-- レコード検索・レコードリスト統合ボックス -->
       <div class="controls">
+        <!-- レコード検索セクション -->
+        <h2 class="section-title">🔍 レコード検索</h2>
+
         <!-- 大会種別 -->
         <div class="control-group">
           <label for="category">大会種別</label>
@@ -442,39 +634,70 @@
           </select>
         </div>
 
-        <!-- 操作方法 -->
+        <!-- 詳細フィルター（アコーディオン） -->
         <div class="control-group">
-          <label>操作方法</label>
-          <div class="chip-container" id="controlChips"></div>
+          <div class="advanced-filter">
+            <div class="filter-header" id="filterHeader">
+              <span class="filter-toggle-icon" id="filterToggleIcon">+</span>
+              <span class="filter-header-title">詳細フィルター</span>
+            </div>
+            <div class="filter-content" id="filterContent">
+              <div class="filter-inner">
+                <!-- バージョンフィルター -->
+                <div class="filter-group">
+                  <span class="filter-group-label">バージョン</span>
+                  <div class="filter-options" id="versionFilterOptions"></div>
+                </div>
+
+                <!-- 操作方法フィルター -->
+                <div class="filter-group">
+                  <span class="filter-group-label">操作方法</span>
+                  <div class="filter-options" id="controlFilterOptions"></div>
+                </div>
+
+                <!-- 承認の有無フィルター -->
+                <div class="filter-group">
+                  <span class="filter-group-label">承認の有無</span>
+                  <div class="filter-options" id="approvalFilterOptions"></div>
+                </div>
+
+                <!-- フィルター適用ボタン -->
+                <div class="filter-actions">
+                  <div class="filter-record-count" id="filterRecordCount">
+                    記録数: 0件
+                  </div>
+                  <div class="filter-error" id="filterError">
+                    各項目ごとに1つ以上を選択してください。
+                  </div>
+                  <button class="apply-filter-btn" id="applyFilterBtn">
+                    表示
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <!-- バージョン -->
-        <div class="control-group">
-          <label>バージョン</label>
-          <div class="chip-container" id="versionChips"></div>
-        </div>
+        <!-- セクション区切り -->
+        <hr class="section-divider" />
 
-        <!-- 承認済のみ表示 -->
-        <div class="control-group">
-          <div class="checkbox-item">
-            <input type="checkbox" id="approvedOnly" />
-            <label for="approvedOnly">承認済のみ表示</label>
+        <!-- レコードリストセクション -->
+        <h2 class="section-title">📊 レコードリスト</h2>
+
+        <!-- ランキングテーブル -->
+        <div id="rankingTable">
+          <div class="empty-state">
+            <div class="empty-state-icon">🎮</div>
+            <h2>大会種別とコースを選択してください</h2>
+            <p>上記のフィルターから表示したいランキングを選んでください</p>
           </div>
         </div>
       </div>
 
-      <!-- ランキングテーブル -->
-      <div class="table-container" id="rankingTable">
-        <div class="empty-state">
-          <div class="empty-state-icon">🎮</div>
-          <h2>大会種別とコースを選択してください</h2>
-          <p>上記のフィルターから表示したいランキングを選んでください</p>
-        </div>
-      </div>
-
-      <!-- 最近の申請 -->
+      <!-- 最近の申請セクション -->
       <div class="table-container recent-submissions">
-        <h2>📝 最近の申請</h2>
+        <h2 class="section-title">📝 最近の申請</h2>
+
         <div id="recentSubmissionsTable">
           <div class="loading">データを読み込んでいます...</div>
         </div>
@@ -502,9 +725,15 @@
       let courseMaster = []; // コースマスターデータ
       let versionMaster = []; // バージョンマスターデータ
 
-      // フィルター選択状態
-      let selectedVersions = []; // 選択中のバージョン
-      let selectedControls = ["タッチ"]; // 選択中の操作方法（デフォルト：タッチ）
+      // フィルター選択状態（一時的な選択状態）
+      let tempSelectedVersions = []; // 詳細フィルター内で一時選択中のバージョン
+      let tempSelectedControls = []; // 詳細フィルター内で一時選択中の操作方法
+      let tempApprovalFilter = "all"; // 詳細フィルター内で一時選択中の承認フィルター
+
+      // 適用済みフィルター（OKボタンを押した後の状態）
+      let appliedVersions = []; // 適用済みのバージョン
+      let appliedControls = []; // 適用済みの操作方法
+      let appliedApprovalFilter = "all"; // 適用済みの承認フィルター
 
       // ソート状態
       let currentSort = {
@@ -515,10 +744,13 @@
       // 操作方法の表示用アイコンマッピング
       const CONTROL_TYPES = {
         タッチ: "👆",
-        "タッチ（箒あり）": "👆(🧹)",
+        "タッチ(箒あり)": "👆🧹",
         コントローラー: "🎮",
-        "コントローラー（箒あり）": "🎮(🧹)",
+        "コントローラー(箒あり)": "🎮🧹",
       };
+
+      // アコーディオンの開閉状態
+      let isFilterOpen = false;
 
       // ========================================
       // ユーティリティ関数
@@ -577,15 +809,19 @@
 
         // コース変更時
         document.getElementById("course").addEventListener("change", () => {
-          updateVersionCounts();
-          updateControlCounts();
+          updateFilterRecordCount();
           renderRanking();
         });
 
-        // 承認済のみ表示チェックボックス変更時
+        // アコーディオンの開閉
         document
-          .getElementById("approvedOnly")
-          .addEventListener("change", renderRanking);
+          .getElementById("filterHeader")
+          .addEventListener("click", toggleFilter);
+
+        // OKボタン
+        document
+          .getElementById("applyFilterBtn")
+          .addEventListener("click", applyFilter);
       }
 
       // ========================================
@@ -597,8 +833,10 @@
        */
       async function loadData() {
         const rankingTable = document.getElementById("rankingTable");
-        rankingTable.innerHTML =
-          '<div class="loading">データを読み込んでいます...</div>';
+        if (rankingTable) {
+          rankingTable.innerHTML =
+            '<div class="loading">データを読み込んでいます...</div>';
+        }
 
         try {
           // キャッシュ回避のためタイムスタンプ付与
@@ -621,25 +859,26 @@
           console.log("- courseMaster:", courseMaster.length);
           console.log("- versionMaster:", versionMaster.length);
 
-          // UI初期化
-          populateCategories();
-          populateVersionChips();
-          populateControlChips();
-          renderRanking();
+          // UI初期化（フィルターUIを先に構築してからデフォルト選択を行う）
+          populateVersionFilters();
+          populateControlFilters(); // 内部でpopulateApprovalFilterも呼び出す
+          populateCategories(); // 内部でデフォルト選択の本家/No.1を設定し、renderRankingまで呼び出す
           renderRecentSubmissions();
         } catch (error) {
           console.error("データ取得エラー:", error);
-          rankingTable.innerHTML = `
+          if (rankingTable) {
+            rankingTable.innerHTML = `
             <div class="empty-state">
               <h2>データの読み込みに失敗しました</h2>
               <p>${error.message}</p>
             </div>
           `;
+          }
         }
       }
 
       // ========================================
-      // UI生成（セレクトボックス・チップ）
+      // UI生成（セレクトボックス・フィルター）
       // ========================================
 
       /**
@@ -664,6 +903,13 @@
           option.textContent = `${cat} （${count}件）`;
           categorySelect.appendChild(option);
         });
+
+        // デフォルトで「本家」を選択し、コース選択とレンダリングまで実行
+        if (categories.includes("本家")) {
+          categorySelect.value = "本家";
+          onCategoryChange();
+          renderRanking();
+        }
       }
 
       /**
@@ -698,21 +944,27 @@
             courseSelect.appendChild(option);
           });
 
-          updateVersionCounts();
-          updateControlCounts();
+          // デフォルトで「No.1」を選択（大会種別が「本家」の場合）
+          if (
+            category === "本家" &&
+            courses.find((c) => c["コース名"] === "No.1")
+          ) {
+            courseSelect.value = "No.1";
+          }
+
+          updateFilterRecordCount();
         } else {
           courseSelect.disabled = true;
-          updateVersionCounts();
-          updateControlCounts();
+          updateFilterRecordCount();
           renderRanking();
         }
       }
 
       /**
-       * バージョンチップを生成
+       * バージョンフィルターのチェックボックスを生成
        */
-      function populateVersionChips() {
-        const container = document.getElementById("versionChips");
+      function populateVersionFilters() {
+        const container = document.getElementById("versionFilterOptions");
         container.innerHTML = "";
 
         // バージョンマスタを新しい順に並べる
@@ -720,139 +972,236 @@
           .map((row) => row[Object.keys(row)[0]])
           .reverse();
 
-        const latestVersion = versions[0]; // 最新バージョン
-
         versions.forEach((version) => {
-          const count = allData.filter(
-            (row) => row["バージョン"] === version,
-          ).length;
-
           const chip = document.createElement("div");
-          chip.className = "chip";
-          chip.innerHTML = `${version}<span class="record-count">${count}件</span>`;
+          chip.className = "filter-chip selected"; // デフォルトで選択状態
+          chip.textContent = version;
           chip.dataset.version = version;
 
-          // 最新バージョンをデフォルト選択
-          if (version === latestVersion) {
-            chip.classList.add("selected");
-            selectedVersions.push(version);
-          }
+          chip.addEventListener("click", () => {
+            chip.classList.toggle("selected");
+            onFilterChange();
+          });
 
-          chip.addEventListener("click", () =>
-            toggleVersionChip(chip, version),
-          );
           container.appendChild(chip);
+
+          // 初期状態として全て選択
+          tempSelectedVersions.push(version);
         });
       }
 
       /**
-       * 操作方法チップを生成
+       * 操作方法フィルターのチェックボックスを生成
        */
-      function populateControlChips() {
-        const container = document.getElementById("controlChips");
+      function populateControlFilters() {
+        const container = document.getElementById("controlFilterOptions");
         container.innerHTML = "";
 
         Object.entries(CONTROL_TYPES).forEach(([controlType, icon]) => {
-          const count = allData.filter(
-            (row) => row["操作方法"] === controlType,
-          ).length;
-
           const chip = document.createElement("div");
-          chip.className = "chip";
-          chip.innerHTML = `${icon}<span class="record-count">${count}件</span>`;
+          chip.className = "filter-chip selected"; // デフォルトで選択状態
+          chip.innerHTML = `<span class="filter-icon">${icon}</span>${controlType}`;
           chip.dataset.control = controlType;
 
-          // デフォルトで「タッチ」を選択
-          if (controlType === "タッチ") {
-            chip.classList.add("selected");
-          }
+          chip.addEventListener("click", () => {
+            chip.classList.toggle("selected");
+            onFilterChange();
+          });
 
-          chip.addEventListener("click", () =>
-            toggleControlChip(chip, controlType),
-          );
           container.appendChild(chip);
+
+          // 初期状態として全て選択
+          tempSelectedControls.push(controlType);
         });
+
+        // 承認フィルターのボタンを生成
+        populateApprovalFilter();
+
+        // 初期状態を適用済みに設定
+        appliedVersions = [...tempSelectedVersions];
+        appliedControls = [...tempSelectedControls];
+        appliedApprovalFilter = tempApprovalFilter;
+        updateFilterRecordCount();
+      }
+
+      /**
+       * 承認フィルターのボタンを生成
+       */
+      function populateApprovalFilter() {
+        const container = document.getElementById("approvalFilterOptions");
+        container.innerHTML = "";
+
+        // コンテナに縦並びのラジオボタン風レイアウトを適用
+        container.className = "approval-options";
+
+        // 「すべて」項目
+        const allItem = document.createElement("div");
+        allItem.className = "approval-item selected"; // デフォルトで選択状態
+        allItem.innerHTML = `
+          <div class="approval-indicator"></div>
+          <span class="approval-label">すべて</span>
+        `;
+
+        // 「承認済のみ」項目
+        const approvedItem = document.createElement("div");
+        approvedItem.className = "approval-item";
+        approvedItem.innerHTML = `
+          <div class="approval-indicator"></div>
+          <span class="approval-label">承認済のみ</span>
+        `;
+
+        // クリックイベント（相互排他的）
+        allItem.addEventListener("click", () => {
+          allItem.classList.add("selected");
+          approvedItem.classList.remove("selected");
+          tempApprovalFilter = "all";
+          onFilterChange();
+        });
+
+        approvedItem.addEventListener("click", () => {
+          approvedItem.classList.add("selected");
+          allItem.classList.remove("selected");
+          tempApprovalFilter = "approved";
+          onFilterChange();
+        });
+
+        container.appendChild(allItem);
+        container.appendChild(approvedItem);
       }
 
       // ========================================
-      // フィルター操作
+      // アコーディオンフィルター操作
       // ========================================
 
       /**
-       * バージョンチップの選択切り替え
-       * @param {HTMLElement} chip - クリックされたチップ要素
-       * @param {string} version - バージョン名
+       * アコーディオンフィルターの開閉
        */
-      function toggleVersionChip(chip, version) {
-        chip.classList.toggle("selected");
+      function toggleFilter() {
+        isFilterOpen = !isFilterOpen;
+        const content = document.getElementById("filterContent");
+        const icon = document.getElementById("filterToggleIcon");
 
-        if (selectedVersions.includes(version)) {
-          selectedVersions = selectedVersions.filter((v) => v !== version);
+        if (isFilterOpen) {
+          content.classList.add("open");
+          icon.textContent = "-";
         } else {
-          selectedVersions.push(version);
+          content.classList.remove("open");
+          icon.textContent = "+";
         }
-
-        renderRanking();
       }
 
       /**
-       * 操作方法チップの選択切り替え
-       * @param {HTMLElement} chip - クリックされたチップ要素
-       * @param {string} controlType - 操作方法
+       * フィルターのチェックボックス変更時の処理
        */
-      function toggleControlChip(chip, controlType) {
-        chip.classList.toggle("selected");
+      function onFilterChange() {
+        // 一時選択状態を更新
+        tempSelectedVersions = [];
+        document
+          .querySelectorAll("#versionFilterOptions .filter-chip.selected")
+          .forEach((chip) => {
+            tempSelectedVersions.push(chip.dataset.version);
+          });
 
-        if (selectedControls.includes(controlType)) {
-          selectedControls = selectedControls.filter((c) => c !== controlType);
-        } else {
-          selectedControls.push(controlType);
-        }
+        tempSelectedControls = [];
+        document
+          .querySelectorAll("#controlFilterOptions .filter-chip.selected")
+          .forEach((chip) => {
+            tempSelectedControls.push(chip.dataset.control);
+          });
 
-        renderRanking();
+        // 記録数とボタン状態を更新
+        updateFilterRecordCount();
+        updateApplyButtonState();
       }
 
       /**
-       * バージョンチップの件数表示を更新
+       * フィルター内の記録数表示を更新
        */
-      function updateVersionCounts() {
+      function updateFilterRecordCount() {
         const category = document.getElementById("category").value;
         const course = document.getElementById("course").value;
+        const countDisplay = document.getElementById("filterRecordCount");
 
-        document.querySelectorAll(".chip[data-version]").forEach((chip) => {
-          const version = chip.dataset.version;
+        // バージョンまたは操作方法が選択されていない場合
+        if (
+          tempSelectedVersions.length === 0 ||
+          tempSelectedControls.length === 0
+        ) {
+          countDisplay.textContent = "記録数: -";
+          countDisplay.classList.add("error");
+          return;
+        }
 
-          // フィルター条件に応じて件数を計算
-          let count = allData.filter((r) => r["バージョン"] === version);
-          if (category) count = count.filter((r) => r["大会種別"] === category);
-          if (course) count = count.filter((r) => r["コース名"] === course);
+        countDisplay.classList.remove("error");
 
-          const badge = chip.querySelector(".record-count");
-          if (badge) badge.textContent = `${count.length}件`;
-        });
-      }
+        if (!category || !course) {
+          countDisplay.textContent = "記録数: 0件";
+          return;
+        }
 
-      /**
-       * 操作方法チップの件数表示を更新
-       */
-      function updateControlCounts() {
-        const category = document.getElementById("category").value;
-        const course = document.getElementById("course").value;
+        // 一時選択状態に基づいて記録数を計算
+        let filteredData = allData.filter(
+          (row) => row["大会種別"] === category && row["コース名"] === course,
+        );
 
-        Object.keys(CONTROL_TYPES).forEach((controlType) => {
-          // フィルター条件に応じて件数を計算
-          let count = allData.filter((r) => r["操作方法"] === controlType);
-          if (category) count = count.filter((r) => r["大会種別"] === category);
-          if (course) count = count.filter((r) => r["コース名"] === course);
-
-          const chip = document.querySelector(
-            `.chip[data-control="${controlType}"]`,
+        // バージョンフィルター
+        if (tempSelectedVersions.length > 0) {
+          filteredData = filteredData.filter((row) =>
+            tempSelectedVersions.includes(row["バージョン"]),
           );
-          if (chip) {
-            const badge = chip.querySelector(".record-count");
-            if (badge) badge.textContent = `${count.length}件`;
-          }
-        });
+        }
+
+        // 操作方法フィルター
+        if (tempSelectedControls.length > 0) {
+          filteredData = filteredData.filter((row) =>
+            tempSelectedControls.includes(row["操作方法"]),
+          );
+        }
+
+        // 承認フィルター
+        if (tempApprovalFilter === "approved") {
+          filteredData = filteredData.filter((row) => row["承認状態"] === "OK");
+        }
+
+        countDisplay.textContent = `記録数: ${filteredData.length}件`;
+      }
+
+      /**
+       * OKボタンの有効/無効状態を更新
+       */
+      function updateApplyButtonState() {
+        const applyBtn = document.getElementById("applyFilterBtn");
+        const errorMsg = document.getElementById("filterError");
+
+        // バージョンまたは操作方法が1つも選択されていない場合は無効化
+        if (
+          tempSelectedVersions.length === 0 ||
+          tempSelectedControls.length === 0
+        ) {
+          applyBtn.disabled = true;
+          errorMsg.classList.add("show");
+        } else {
+          applyBtn.disabled = false;
+          errorMsg.classList.remove("show");
+        }
+      }
+
+      /**
+       * フィルターを適用（OKボタン押下時）
+       */
+      function applyFilter() {
+        // 一時選択状態を適用済みに反映
+        appliedVersions = [...tempSelectedVersions];
+        appliedControls = [...tempSelectedControls];
+        appliedApprovalFilter = tempApprovalFilter;
+
+        // ランキングを再描画
+        renderRanking();
+
+        // アコーディオンを閉じる
+        if (isFilterOpen) {
+          toggleFilter();
+        }
       }
 
       // ========================================
@@ -886,7 +1235,6 @@
       function renderRanking() {
         const category = document.getElementById("category").value;
         const course = document.getElementById("course").value;
-        const approvedOnly = document.getElementById("approvedOnly").checked;
         const rankingTable = document.getElementById("rankingTable");
 
         // 大会種別・コース未選択時
@@ -906,22 +1254,22 @@
           (row) => row["大会種別"] === category && row["コース名"] === course,
         );
 
-        // バージョンフィルター
-        if (selectedVersions.length > 0) {
+        // 適用済みバージョンフィルター
+        if (appliedVersions.length > 0) {
           filteredData = filteredData.filter((row) =>
-            selectedVersions.includes(row["バージョン"]),
+            appliedVersions.includes(row["バージョン"]),
           );
         }
 
-        // 操作方法フィルター
-        if (selectedControls.length > 0) {
+        // 適用済み操作方法フィルター
+        if (appliedControls.length > 0) {
           filteredData = filteredData.filter((row) =>
-            selectedControls.includes(row["操作方法"]),
+            appliedControls.includes(row["操作方法"]),
           );
         }
 
-        // 承認済のみフィルター
-        if (approvedOnly) {
+        // 適用済み承認フィルター
+        if (appliedApprovalFilter === "approved") {
           filteredData = filteredData.filter((row) => row["承認状態"] === "OK");
         }
 
@@ -971,6 +1319,7 @@
                     onclick="sortRanking('タイム')">タイム</th>
                 <th class="sortable ${currentSort.column === "記録日" ? "sort-" + currentSort.order : ""}" 
                     onclick="sortRanking('記録日')">記録日</th>
+                <th>操作</th>
                 <th>バージョン</th>
                 <th>動画</th>
                 <th>状態</th>
@@ -993,11 +1342,16 @@
             ? `<a href="https://x.com/${xHandle}" target="_blank" class="player-link">${username}</a>`
             : "-";
 
+          // 操作方法のアイコンを取得
+          const controlIcon =
+            CONTROL_TYPES[row["操作方法"]] || row["操作方法"] || "-";
+
           html += `
             <tr>
               <td>${playerDisplay}</td>
               <td><strong>${row["タイム"]}秒</strong></td>
               <td>${formatDate(row["記録日"])}</td>
+              <td class="control-cell">${controlIcon}</td>
               <td>${row["バージョン"] || "-"}</td>
               <td>${row["リンク"] ? `<a href="${row["リンク"]}" target="_blank" class="video-link">▶</a>` : "-"}</td>
               <td><span class="status-badge ${statusClass}">${statusText}</span></td>
@@ -1045,6 +1399,7 @@
                 <th>プレイヤー</th>
                 <th>タイム</th>
                 <th>記録日</th>
+                <th>操作</th>
                 <th>バージョン</th>
                 <th>動画</th>
               </tr>
@@ -1061,6 +1416,10 @@
             ? `<a href="https://x.com/${xHandle}" target="_blank" class="player-link">${username}</a>`
             : "-";
 
+          // 操作方法のアイコンを取得
+          const controlIcon =
+            CONTROL_TYPES[row["操作方法"]] || row["操作方法"] || "-";
+
           html += `
             <tr>
               <td>${formatDateTime(row["タイムスタンプ"])}</td>
@@ -1069,6 +1428,7 @@
               <td>${playerDisplay}</td>
               <td><strong>${row["タイム"]}秒</strong></td>
               <td>${formatDate(row["記録日"])}</td>
+              <td class="control-cell">${controlIcon}</td>
               <td>${row["バージョン"] || "-"}</td>
               <td>${row["リンク"] ? `<a href="${row["リンク"]}" target="_blank" class="video-link">▶</a>` : "-"}</td>
             </tr>

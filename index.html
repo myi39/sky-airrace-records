@@ -591,6 +591,11 @@
         text-decoration: underline;
       }
 
+      /* スマホ限定の改行 */
+      .sp-only {
+        display: none;
+      }
+
       /* ========================================
          レスポンシブ
          ======================================== */
@@ -605,6 +610,10 @@
       }
 
       @media (max-width: 768px) {
+        .sp-only {
+          display: block;
+        }
+
         h1 {
           font-size: 2em;
         }
@@ -713,7 +722,10 @@
     <div class="container">
       <!-- ヘッダー -->
       <header>
-        <h1>Sky Air Race 記録まとめ</h1>
+        <h1>
+          Sky Air Race<br class="sp-only" />
+          記録まとめ
+        </h1>
         <div class="description">
           本サイトは非公式の記録まとめページです。<br />
           <a href="https://forms.gle/rojYVzxP28hz7vVr7" target="_blank">

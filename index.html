@@ -180,13 +180,40 @@
       }
 
       .filter-toggle-icon {
-        font-size: 2.5em;
-        font-weight: bold;
-        color: #333;
-        line-height: 1;
-        width: 1.2em;
-        text-align: center;
+        position: relative;
+        width: 22px;
+        height: 22px;
         flex-shrink: 0;
+      }
+
+      /* 横棒（常に表示） */
+      .filter-toggle-icon::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 16px;
+        height: 2.5px;
+        background: #333;
+        transform: translate(-50%, -50%);
+      }
+
+      /* 縦棒（閉じた状態のときのみ表示） */
+      .filter-toggle-icon::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 2.5px;
+        height: 16px;
+        background: #333;
+        transform: translate(-50%, -50%);
+        transition: opacity 0.2s;
+      }
+
+      /* 開いた状態では縦棒を消す */
+      .filter-header.active .filter-toggle-icon::after {
+        opacity: 0;
       }
 
       .filter-content {
@@ -567,6 +594,16 @@
       /* ========================================
          レスポンシブ
          ======================================== */
+
+      /* 申請日時セルのデフォルト（デスクトップ：インライン） */
+      .datetime-cell .date-part,
+      .datetime-cell .time-part {
+        display: inline;
+      }
+      .datetime-cell .time-part::before {
+        content: " ";
+      }
+
       @media (max-width: 768px) {
         h1 {
           font-size: 2em;
@@ -580,6 +617,7 @@
           font-size: 1.4em;
         }
 
+        /* テーブル全体の文字サイズ縮小 */
         table {
           font-size: 0.7em;
           display: block;
@@ -595,6 +633,58 @@
         .table-container,
         .recent-submissions {
           padding: 15px;
+        }
+
+        /* アコーディオンアイコンのサイズ縮小 */
+        .filter-toggle-icon {
+          width: 14px;
+          height: 14px;
+        }
+
+        .filter-toggle-icon::before {
+          width: 10px;
+          height: 1.5px;
+        }
+
+        .filter-toggle-icon::after {
+          width: 1.5px;
+          height: 10px;
+        }
+
+        /* チップのサイズを縮小 */
+        .filter-chip {
+          padding: 7px 12px;
+          font-size: 0.82em;
+        }
+
+        /* フィルターグループラベルの縮小 */
+        .filter-group-label {
+          font-size: 0.85em;
+        }
+
+        /* 承認ラジオボタンの縮小 */
+        .approval-indicator {
+          width: 16px;
+          height: 16px;
+        }
+
+        .approval-item.selected .approval-indicator::after {
+          width: 6px;
+          height: 6px;
+        }
+
+        .approval-label {
+          font-size: 0.85em;
+        }
+
+        /* 最近の申請の申請日時を日付と時刻で2行にする */
+        .datetime-cell .date-part,
+        .datetime-cell .time-part {
+          display: block;
+          white-space: nowrap;
+        }
+        .datetime-cell .time-part::before {
+          content: none;
         }
       }
     </style>
@@ -638,7 +728,7 @@
         <div class="control-group">
           <div class="advanced-filter">
             <div class="filter-header" id="filterHeader">
-              <span class="filter-toggle-icon" id="filterToggleIcon">+</span>
+              <span class="filter-toggle-icon" id="filterToggleIcon"></span>
               <span class="filter-header-title">詳細フィルター</span>
             </div>
             <div class="filter-content" id="filterContent">
@@ -786,9 +876,18 @@
         return `${year}/${month}/${day} ${hour}:${minute}`;
       }
 
-      // ========================================
-      // 初期化
-      // ========================================
+      /**
+       * 時刻を HH:MM 形式にフォーマット
+       * @param {string} dateString - ISO形式の日付文字列
+       * @returns {string} フォーマットされた時刻
+       */
+      function formatTime(dateString) {
+        if (!dateString) return "-";
+        const date = new Date(dateString);
+        const hour = String(date.getHours()).padStart(2, "0");
+        const minute = String(date.getMinutes()).padStart(2, "0");
+        return `${hour}:${minute}`;
+      }
 
       /**
        * アプリケーション初期化
@@ -1079,14 +1178,14 @@
       function toggleFilter() {
         isFilterOpen = !isFilterOpen;
         const content = document.getElementById("filterContent");
-        const icon = document.getElementById("filterToggleIcon");
+        const header = document.getElementById("filterHeader");
 
         if (isFilterOpen) {
           content.classList.add("open");
-          icon.textContent = "-";
+          header.classList.add("active");
         } else {
           content.classList.remove("open");
-          icon.textContent = "+";
+          header.classList.remove("active");
         }
       }
 
@@ -1422,7 +1521,7 @@
 
           html += `
             <tr>
-              <td>${formatDateTime(row["タイムスタンプ"])}</td>
+              <td class="datetime-cell"><span class="date-part">${formatDate(row["タイムスタンプ"])}</span><span class="time-part">${formatTime(row["タイムスタンプ"])}</span></td>
               <td>${row["大会種別"] || "-"}</td>
               <td>${row["コース名"] || "-"}</td>
               <td>${playerDisplay}</td>

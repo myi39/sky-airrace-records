@@ -343,6 +343,11 @@
         flex-direction: column;
         justify-content: center;
         box-sizing: border-box;
+        visibility: hidden;
+      }
+
+      .course-card.is-ready {
+        visibility: visible;
       }
 
       .course-card:hover {
@@ -1761,6 +1766,7 @@
                   courseDate.style.fontSize = `${0.7 * scale}em`;
                 }
               }
+              card.classList.add("is-ready");
             });
           });
         }, 50);

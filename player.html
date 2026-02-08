@@ -397,19 +397,10 @@
       }
 
       .course-date {
+        font-size: 0.7em;
         color: #666;
         margin-top: 4px;
         min-height: 1em; /* 記録なしでも高さを確保 */
-      }
-
-      /* 日本語を含むコース名の場合：コース名と同じサイズ */
-      .course-date.has-jp {
-        font-size: max(8px, 0.95em);
-      }
-
-      /* 日本語を含まないコース名の場合：コース名の0.8倍 */
-      .course-date.no-jp {
-        font-size: max(8px, 0.76em); /* 0.95em × 0.8 = 0.76em */
       }
 
       /* ========================================
@@ -1589,15 +1580,6 @@
       }
 
       /**
-       * 文字列に日本語（ひらがな、カタカナ、漢字）が含まれるか判定
-       * @param {string} str - 判定する文字列
-       * @returns {boolean} 日本語が含まれる場合true
-       */
-      function containsJapanese(str) {
-        return /[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF]/.test(str);
-      }
-
-      /**
        * スタンプラリーグリッドを生成
        */
       function renderStampGrid() {
@@ -1625,16 +1607,13 @@
             const key = `${category}_${courseName}`;
             const record = bestTimes[key];
 
-            // 日本語判定に基づくクラスを設定
-            const dateClass = containsJapanese(courseName) ? "has-jp" : "no-jp";
-
             if (record) {
               // 記録あり
               html += `
                 <div class="course-card has-record" onclick="navigateToCourse('${category}', '${courseName}')">
                   <div class="course-name">${courseName}</div>
                   <div class="course-time">${record["タイム"]}</div>
-                  <div class="course-date ${dateClass}">${formatDate(record["記録日"])}</div>
+                  <div class="course-date">${formatDate(record["記録日"])}</div>
                 </div>
               `;
             } else {
@@ -1643,7 +1622,7 @@
                 <div class="course-card no-record" onclick="navigateToCourse('${category}', '${courseName}')">
                   <div class="course-name">${courseName}</div>
                   <div class="course-time">-</div>
-                  <div class="course-date ${dateClass}"></div>
+                  <div class="course-date"></div>
                 </div>
               `;
             }
@@ -1701,7 +1680,7 @@
               const courseTime = card.querySelector(".course-time");
               const courseDate = card.querySelector(".course-date");
 
-              // コースタイム（No.3など）のサイズを設定
+              // コースタイムのサイズを設定
               if (courseTime) {
                 courseTime.style.fontSize = `${1.3 * scale}em`;
               }
@@ -1771,9 +1750,13 @@
               }
 
               if (courseDate) {
-                // 日付は記録がある場合は8pxに固定
-                if (courseDate.textContent.trim() !== "") {
-                  courseDate.style.fontSize = "8px";
+                if (courseDate.textContent.trim() !== "" && courseName) {
+                  // courseName の最終ピクセルサイズを取得
+                  const courseNamePixelSize = parseFloat(
+                    getComputedStyle(courseName).fontSize,
+                  );
+                  // courseName の 0.6 倍
+                  courseDate.style.fontSize = `${courseNamePixelSize * 0.6}px`;
                 } else {
                   courseDate.style.fontSize = `${0.7 * scale}em`;
                 }

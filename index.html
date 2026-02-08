@@ -3,7 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sky Air Race 記録まとめ</title>
+    <title>Sky Air Race 記録まとめ - レコード一覧</title>
+
+    <!-- ナビゲーション -->
+    <script src="navigation.js"></script>
+
     <style>
       /* ========================================
          基本設定
@@ -24,6 +28,7 @@
       .container {
         max-width: 1200px;
         margin: 0 auto;
+        padding-top: 55px; /* ハンバーガーメニュー用の最小限の余白 */
       }
 
       /* ========================================
@@ -32,13 +37,13 @@
       header {
         text-align: center;
         color: white;
-        margin-bottom: 30px;
+        margin-bottom: 20px;
       }
 
       h1 {
-        font-size: 3em;
+        font-size: 2.5em;
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        margin-bottom: 10px;
+        margin-bottom: 5px;
       }
 
       .description {
@@ -287,8 +292,8 @@
       /* 承認フィルター（シンプルラジオボタン） */
       .approval-options {
         display: flex;
-        flex-direction: column;
-        gap: 10px;
+        flex-direction: row;
+        gap: 15px;
       }
 
       .approval-item {
@@ -579,18 +584,6 @@
       /* ========================================
          フッター
          ======================================== */
-      footer {
-        text-align: center;
-        padding: 20px;
-        color: rgba(37, 89, 139, 0.6);
-        font-size: 0.85em;
-      }
-
-      footer a {
-        color: rgba(37, 89, 139, 0.8);
-        text-decoration: underline;
-      }
-
       /* スマホ限定の改行 */
       .sp-only {
         display: none;
@@ -826,17 +819,6 @@
       </div>
     </div>
 
-    <!-- フッター -->
-    <footer>
-      改善・要望はRemyiの
-      <a href="https://x.com/Re_myi_" target="_blank">X</a>
-      または
-      <a href="https://marshmallow-qa.com/re_myi_" target="_blank"
-        >マシュマロ</a
-      >
-      まで。
-    </footer>
-
     <script>
       // ========================================
       // グローバル変数
@@ -995,6 +977,9 @@
           populateControlFilters(); // 内部でpopulateApprovalFilterも呼び出す
           populateCategories(); // 内部でデフォルト選択の本家/No.1を設定し、renderRankingまで呼び出す
           renderRecentSubmissions();
+
+          // URLクエリパラメータを適用（デフォルト選択を上書き）
+          applyUrlParams();
         } catch (error) {
           console.error("データ取得エラー:", error);
           if (rankingTable) {
@@ -1040,6 +1025,47 @@
           categorySelect.value = "本家";
           onCategoryChange();
           renderRanking();
+        }
+      }
+
+      /**
+       * URLクエリパラメータを取得
+       * @returns {Object} パラメータのキーバリューペア
+       */
+      function getUrlParams() {
+        const params = {};
+        const searchParams = new URLSearchParams(window.location.search);
+        for (const [key, value] of searchParams) {
+          params[key] = value;
+        }
+        return params;
+      }
+
+      /**
+       * URLクエリパラメータを読み取って大会種別とコースを自動選択
+       */
+      function applyUrlParams() {
+        const params = getUrlParams();
+
+        if (params.category) {
+          const categorySelect = document.getElementById("category");
+          categorySelect.value = params.category;
+          onCategoryChange();
+
+          if (params.course) {
+            // DOMの更新を待ってからコースを設定
+            setTimeout(() => {
+              const courseSelect = document.getElementById("course");
+              courseSelect.value = params.course;
+              updateFilterRecordCount();
+              renderRanking();
+            }, 50);
+          } else {
+            // カテゴリのみ指定されている場合
+            setTimeout(() => {
+              renderRanking();
+            }, 50);
+          }
         }
       }
 
@@ -1470,7 +1496,7 @@
             ? username.slice(1)
             : username;
           const playerDisplay = xHandle
-            ? `<a href="https://x.com/${xHandle}" target="_blank" class="player-link">${username}</a>`
+            ? `<a href="player.html?user=${encodeURIComponent(username)}" class="player-link">${username}</a>`
             : "-";
 
           // 操作方法のアイコンを取得
@@ -1544,7 +1570,7 @@
             ? username.slice(1)
             : username;
           const playerDisplay = xHandle
-            ? `<a href="https://x.com/${xHandle}" target="_blank" class="player-link">${username}</a>`
+            ? `<a href="player.html?user=${encodeURIComponent(username)}" class="player-link">${username}</a>`
             : "-";
 
           // 操作方法のアイコンを取得

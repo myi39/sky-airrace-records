@@ -1,0 +1,698 @@
+/* ========================================
+   ヘッダー・検索ボックス
+   ======================================== */
+.page-header {
+  display: none; /* ヘッダーを非表示 */
+}
+
+h1 {
+  font-size: 2em;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  margin-bottom: 15px;
+}
+
+/* プレイヤー検索ボックス（タブ風にコンパクト） */
+.player-search-container {
+  background: white;
+  border-radius: 6px;
+  padding: 8px 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  margin-bottom: 12px;
+  max-width: 450px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.search-box-wrapper {
+  position: relative;
+}
+
+.search-label {
+  font-size: 0.7em;
+  color: #666;
+  margin-bottom: 4px;
+  display: block;
+  font-weight: 500;
+}
+
+.search-icon {
+  position: absolute;
+  left: 8px;
+  top: calc(50% + 10px); /* ラベル分の調整 */
+  transform: translateY(-50%);
+  font-size: 0.85em;
+  color: #999;
+}
+
+#playerSearchInput {
+  width: 100%;
+  padding: 6px 8px 6px 28px;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+  font-size: 0.85em;
+  transition: all 0.3s;
+}
+
+#playerSearchInput:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+}
+
+#playerSearchInput::placeholder {
+  color: #bbb;
+  font-size: 0.9em;
+}
+
+/* 未選択時の案内 */
+.search-guide {
+  text-align: center;
+  padding: 60px 20px;
+  color: #666;
+}
+
+.search-guide-icon {
+  font-size: 3em;
+  margin-bottom: 15px;
+}
+
+.search-guide h2 {
+  font-size: 1.3em;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.search-guide p {
+  font-size: 1em;
+  line-height: 1.6;
+}
+
+/* 検索候補リスト */
+#playerSuggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 2px solid #667eea;
+  border-top: none;
+  border-radius: 0 0 12px 12px;
+  max-height: 300px;
+  overflow-y: auto;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+  display: none;
+}
+
+#playerSuggestions.show {
+  display: block;
+}
+
+.suggestion-item {
+  padding: 12px 20px;
+  cursor: pointer;
+  transition: background 0.2s;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.suggestion-item:hover {
+  background: #f5f5f5;
+}
+
+.suggestion-item.no-results {
+  color: #999;
+  cursor: default;
+  text-align: center;
+  font-style: italic;
+}
+
+.suggestion-item.no-results:hover {
+  background: white;
+}
+
+/* ========================================
+   プレイヤー概要
+   ======================================== */
+.player-overview {
+  background: white;
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.player-name {
+  font-size: 24px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.player-name a {
+  color: #667eea;
+  text-decoration: none;
+}
+
+.player-name a:hover {
+  text-decoration: underline;
+}
+
+.player-stats {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 2em;
+  font-weight: 700;
+  color: #667eea;
+}
+
+.stat-label {
+  font-size: 0.9em;
+  color: #666;
+  margin-top: 5px;
+}
+
+/* ========================================
+   スタンプラリー型サマリー
+   ======================================== */
+.stamp-rally-section {
+  background: white;
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  margin-bottom: 30px;
+}
+
+/* バージョン切り替え */
+.version-selector {
+  margin-bottom: 20px;
+  padding: 15px;
+  background: #f9f9f9;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.version-selector label {
+  font-weight: 600;
+  color: #555;
+}
+
+.version-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.version-btn {
+  padding: 8px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 20px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-weight: 500;
+  font-size: 0.9em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.version-name {
+  font-weight: 600;
+}
+
+.version-course-count {
+  font-size: 0.75em;
+  color: #666;
+  font-weight: 400;
+}
+
+.version-btn.selected .version-course-count {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.version-btn:hover {
+  border-color: #667eea;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.version-btn.selected {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-color: #667eea;
+}
+
+/* 大会種別グループ */
+.category-group {
+  margin-bottom: 40px;
+}
+
+.category-group:last-child {
+  margin-bottom: 0;
+}
+
+.category-header {
+  font-size: 1.3em;
+  font-weight: 700;
+  color: #555;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+/* グリッド（横5カード） */
+.course-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  /* gap は JavaScript で動的に設定 */
+}
+
+/* コースカード */
+.course-card {
+  background: linear-gradient(135deg, #f5f5f5 0%, #e9e9e9 100%);
+  border-radius: 12px;
+  padding: 15px 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  border: 3px solid transparent;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
+  visibility: hidden;
+}
+
+.course-card.is-ready {
+  visibility: visible;
+}
+
+.course-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* 記録あり */
+.course-card.has-record {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-color: #667eea;
+}
+
+/* 記録ありカードの文字色を白に */
+.course-card.has-record .course-name {
+  color: white;
+}
+
+.course-card.has-record .course-time {
+  color: white;
+}
+
+.course-card.has-record .course-date {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* 記録なし */
+.course-card.no-record {
+  background: linear-gradient(135deg, #fafafa 0%, #e0e0e0 100%);
+  opacity: 0.7;
+}
+
+.course-card.no-record:hover {
+  opacity: 0.85;
+}
+
+.course-name {
+  font-weight: 700;
+  font-size: 0.95em;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.course-time {
+  font-size: 1.3em;
+  font-weight: 700;
+  color: #667eea;
+}
+
+.course-card.no-record .course-time {
+  color: #999;
+}
+
+.course-date {
+  font-size: 0.7em;
+  color: #666;
+  margin-top: 4px;
+  min-height: 1em; /* 記録なしでも高さを確保 */
+}
+
+/* ========================================
+   提出記録一覧
+   ======================================== */
+.records-section {
+  background: white;
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* フィルター（アコーディオン） */
+.records-filter {
+  margin-bottom: 20px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* player固有: filter-header.active 時の色変更 */
+.filter-header.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.filter-header.active .filter-toggle-icon::before {
+  background: white;
+}
+
+.filter-header.active .filter-toggle-icon::after {
+  background: white;
+}
+
+/* player固有: filter-content の max-height */
+.filter-content.open {
+  max-height: 800px;
+}
+
+/* セレクトボックス（フィルター内） */
+.filter-select {
+  width: 100%;
+  padding: 10px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 0.95em;
+  background: white;
+  cursor: pointer;
+  transition: border-color 0.3s;
+}
+
+.filter-select:hover {
+  border-color: #667eea;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.filter-select:disabled {
+  background: #f5f5f5;
+  cursor: not-allowed;
+}
+
+/* player固有: filter-chip のパディング */
+.filter-chip {
+  padding: 8px 16px;
+}
+
+/* player固有: 承認フィルター */
+.approval-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-radius: 8px;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.approval-item:hover {
+  background-color: #f5f5f5;
+}
+
+.records-table-container {
+  overflow-x: auto;
+}
+
+/* ========================================
+   テーブル（player固有サイズ）
+   ======================================== */
+table {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+th {
+  padding: 15px;
+  font-size: 0.95em;
+  white-space: nowrap;
+}
+
+td {
+  padding: 15px;
+  font-size: 0.95em;
+  white-space: nowrap;
+}
+
+/* 操作セル */
+.control-cell {
+  font-size: 1.3em;
+}
+
+/* ========================================
+   空の状態（player固有の色差分）
+   ======================================== */
+.empty-state h2 {
+  color: #555;
+}
+
+.empty-state p {
+  line-height: 1.6;
+}
+
+/* ========================================
+   ローディング
+   ======================================== */
+.loading {
+  text-align: center;
+  padding: 60px 20px;
+  font-size: 1.3em;
+  color: #667eea;
+  font-weight: 600;
+}
+
+/* ========================================
+   レスポンシブ（スマホ対応）
+   ======================================== */
+@media (max-width: 768px) {
+  /* タイトル・ヘッダーのサイズ調整 */
+  h1 {
+    font-size: 1.5em;
+  }
+
+  h2 {
+    font-size: 1.2em;
+  }
+
+  .section-title {
+    font-size: 1.1em;
+  }
+
+  .stat-value {
+    font-size: 1.8em;
+  }
+
+  .stat-label {
+    font-size: 0.85em;
+  }
+
+  /* バージョンボタン */
+  .version-btn {
+    padding: 6px 12px;
+    font-size: 0.8em;
+  }
+
+  .version-name {
+    font-size: 0.9em;
+  }
+
+  .version-course-count {
+    font-size: 0.7em;
+  }
+
+  /* コースグリッド - スマホでも5列キープ */
+  .course-grid {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+  }
+
+  .course-card {
+    padding: 8px 5px;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    border-radius: 8px;
+  }
+
+  .course-name {
+    font-size: 0.65em;
+    margin-bottom: 4px;
+    line-height: 1.1;
+  }
+
+  .course-time {
+    font-size: 0.85em;
+  }
+
+  .course-date {
+    font-size: 0.5em;
+    margin-top: 2px;
+  }
+
+  /* テーブルの横スクロール軽減 */
+  table {
+    font-size: 0.75em;
+  }
+
+  th,
+  td {
+    padding: 8px 4px;
+  }
+
+  th {
+    font-size: 0.85em;
+  }
+
+  /* ステータスバッジ */
+  .status-badge {
+    padding: 2px 6px;
+    font-size: 0.7em;
+  }
+
+  /* 動画リンク */
+  .video-link {
+    width: 24px;
+    height: 24px;
+    font-size: 10px;
+  }
+
+  /* 操作セル */
+  .control-cell {
+    font-size: 1.1em;
+  }
+
+  /* カテゴリヘッダー */
+  .category-header {
+    font-size: 1em;
+    padding: 10px 15px;
+  }
+
+  /* ボックスのpaddingを縮小 */
+  .player-overview,
+  .stamp-rally-section,
+  .records-section {
+    padding: 15px;
+  }
+
+  /* 空の状態 */
+  .empty-state-icon {
+    font-size: 3em;
+  }
+
+  .empty-state h2 {
+    font-size: 1.3em;
+  }
+
+  .empty-state p {
+    font-size: 0.95em;
+  }
+
+  /* フィルターラベル */
+  .filter-group-label {
+    font-size: 0.85em;
+  }
+
+  .approval-label {
+    font-size: 0.85em;
+  }
+
+  /* フィルターチップ */
+  .filter-chip {
+    padding: 7px 12px;
+    font-size: 0.82em;
+  }
+}
+
+/* ========================================
+   ハンバーガーメニューのカスタマイズ
+   ======================================== */
+
+/* ハンバーガーアイコンを右上端に固定 */
+.hamburger-icon {
+  position: fixed !important;
+  top: 0 !important;
+  right: 0 !important;
+  margin: 0 !important;
+  padding: 15px !important;
+  z-index: 1001 !important;
+  transition: opacity 0.3s ease !important;
+}
+
+/* メニューが開いている時はアイコンを非表示 */
+.hamburger-icon.active {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* ハンバーガーアイコンのアニメーションを無効化 */
+.hamburger-icon span {
+  transition: none !important;
+}
+
+.hamburger-icon.active span:nth-child(1),
+.hamburger-icon.active span:nth-child(2),
+.hamburger-icon.active span:nth-child(3) {
+  transform: none !important;
+  opacity: 1 !important;
+}
+
+/* メニューの幅を画面サイズに応じて調整 */
+/* デフォルト: 大画面 */
+.nav-menu {
+  width: 250px !important;
+  max-width: 250px !important;
+}
+
+/* タブレット以下 */
+@media (max-width: 768px) {
+  .nav-menu {
+    width: 200px !important;
+    max-width: 200px !important;
+  }
+}
+
+/* スマートフォン */
+@media (max-width: 480px) {
+  .nav-menu {
+    width: 170px !important;
+    max-width: 170px !important;
+  }
+}

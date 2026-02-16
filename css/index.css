@@ -270,8 +270,22 @@ td.control-cell {
     padding: 20px;
   }
 
+  .controls label {
+    font-size: 0.85em;
+    margin-bottom: 6px;
+  }
+
+  .controls select {
+    padding: 8px;
+    font-size: 0.85em;
+  }
+
+  .course-link-row {
+    margin-bottom: 4px;
+  }
+
   .course-link {
-    font-size: 0.75em;
+    font-size: 0.7em;
   }
 
   .section-title {

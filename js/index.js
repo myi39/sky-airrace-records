@@ -11,11 +11,13 @@ let versionMaster = []; // バージョンマスターデータ
 let tempSelectedVersions = []; // 詳細フィルター内で一時選択中のバージョン
 let tempSelectedControls = []; // 詳細フィルター内で一時選択中の操作方法
 let tempApprovalFilter = "all"; // 詳細フィルター内で一時選択中の承認フィルター
+let tempRecordMode = "best"; // 詳細フィルター内で一時選択中の表示件数
 
 // 適用済みフィルター（OKボタンを押した後の状態）
 let appliedVersions = []; // 適用済みのバージョン
 let appliedControls = []; // 適用済みの操作方法
 let appliedApprovalFilter = "all"; // 適用済みの承認フィルター
+let appliedRecordMode = "best"; // 適用済みの表示件数
 
 // ソート状態
 let currentSort = {
@@ -317,10 +319,14 @@ function populateControlFilters() {
   // 承認フィルターのボタンを生成
   populateApprovalFilter();
 
+  // 表示件数フィルターのボタンを生成
+  populateRecordModeFilter();
+
   // 初期状態を適用済みに設定
   appliedVersions = [...tempSelectedVersions];
   appliedControls = [...tempSelectedControls];
   appliedApprovalFilter = tempApprovalFilter;
+  appliedRecordMode = tempRecordMode;
   updateFilterRecordCount();
 }
 
@@ -367,6 +373,46 @@ function populateApprovalFilter() {
 
   container.appendChild(allItem);
   container.appendChild(approvedItem);
+}
+
+/**
+ * 表示件数フィルターのボタンを生成
+ */
+function populateRecordModeFilter() {
+  const container = document.getElementById("recordModeFilterOptions");
+  container.innerHTML = "";
+  container.className = "approval-options";
+
+  const allItem = document.createElement("div");
+  allItem.className = "approval-item";
+  allItem.innerHTML = `
+    <div class="approval-indicator"></div>
+    <span class="approval-label">すべて</span>
+  `;
+
+  const bestItem = document.createElement("div");
+  bestItem.className = "approval-item selected";
+  bestItem.innerHTML = `
+    <div class="approval-indicator"></div>
+    <span class="approval-label">プレイヤーごとに最速のみ</span>
+  `;
+
+  allItem.addEventListener("click", () => {
+    allItem.classList.add("selected");
+    bestItem.classList.remove("selected");
+    tempRecordMode = "all";
+    onFilterChange();
+  });
+
+  bestItem.addEventListener("click", () => {
+    bestItem.classList.add("selected");
+    allItem.classList.remove("selected");
+    tempRecordMode = "best";
+    onFilterChange();
+  });
+
+  container.appendChild(allItem);
+  container.appendChild(bestItem);
 }
 
 // ========================================
@@ -463,6 +509,19 @@ function updateFilterRecordCount() {
     filteredData = filteredData.filter((row) => row["承認状態"] === "OK");
   }
 
+  // 表示件数フィルター
+  if (tempRecordMode === "best") {
+    const bestByPlayer = new Map();
+    filteredData.forEach((row) => {
+      const player = row["ユーザー名"];
+      const existing = bestByPlayer.get(player);
+      if (!existing || parseFloat(row["タイム"]) < parseFloat(existing["タイム"])) {
+        bestByPlayer.set(player, row);
+      }
+    });
+    filteredData = Array.from(bestByPlayer.values());
+  }
+
   countDisplay.textContent = `記録数: ${filteredData.length}件`;
 }
 
@@ -494,6 +553,7 @@ function applyFilter() {
   appliedVersions = [...tempSelectedVersions];
   appliedControls = [...tempSelectedControls];
   appliedApprovalFilter = tempApprovalFilter;
+  appliedRecordMode = tempRecordMode;
 
   // ランキングを再描画
   renderRanking();
@@ -598,6 +658,19 @@ function renderRanking() {
   // 適用済み承認フィルター
   if (appliedApprovalFilter === "approved") {
     filteredData = filteredData.filter((row) => row["承認状態"] === "OK");
+  }
+
+  // プレイヤーごとに最速タイム1件に絞る
+  if (appliedRecordMode === "best") {
+    const bestByPlayer = new Map();
+    filteredData.forEach((row) => {
+      const player = row["ユーザー名"];
+      const existing = bestByPlayer.get(player);
+      if (!existing || parseFloat(row["タイム"]) < parseFloat(existing["タイム"])) {
+        bestByPlayer.set(player, row);
+      }
+    });
+    filteredData = Array.from(bestByPlayer.values());
   }
 
   // ソート処理

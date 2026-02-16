@@ -530,12 +530,39 @@ function sortRanking(column) {
 // ========================================
 
 /**
+ * コース説明リンクを更新
+ */
+function updateCourseLink(category, course) {
+  const row = document.getElementById("courseLinkRow");
+  const anchor = document.getElementById("courseLinkAnchor");
+
+  if (!category || !course) {
+    row.style.display = "none";
+    return;
+  }
+
+  const courseInfo = courseMaster.find(
+    (c) => c["大会種別"] === category && c["コース名"] === course,
+  );
+
+  if (courseInfo && courseInfo["コースlink"]) {
+    anchor.href = courseInfo["コースlink"];
+    row.style.display = "";
+  } else {
+    row.style.display = "none";
+  }
+}
+
+/**
  * ランキングテーブルをレンダリング
  */
 function renderRanking() {
   const category = document.getElementById("category").value;
   const course = document.getElementById("course").value;
   const rankingTable = document.getElementById("rankingTable");
+
+  // コース説明リンクの更新
+  updateCourseLink(category, course);
 
   // 大会種別・コース未選択時
   if (!category || !course) {

@@ -592,20 +592,6 @@ td {
     font-size: 0.95em;
   }
 
-  /* フィルターラベル */
-  .filter-group-label {
-    font-size: 0.85em;
-  }
-
-  .approval-label {
-    font-size: 0.85em;
-  }
-
-  /* フィルターチップ */
-  .filter-chip {
-    padding: 7px 12px;
-    font-size: 0.82em;
-  }
 }
 
 /* ========================================

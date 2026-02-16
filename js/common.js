@@ -213,3 +213,12 @@ if (document.readyState === "loading") {
 } else {
   initNavigation();
 }
+
+// ツールチップの外側クリックで閉じる
+document.addEventListener("click", (e) => {
+  document.querySelectorAll(".approval-tooltip[open]").forEach((details) => {
+    if (!details.contains(e.target)) {
+      details.removeAttribute("open");
+    }
+  });
+});

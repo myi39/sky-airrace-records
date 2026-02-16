@@ -126,20 +126,6 @@ select:focus {
   display: none;
 }
 
-/* 承認フィルター（シンプルラジオボタン） */
-.approval-options {
-  display: flex;
-  flex-direction: row;
-  gap: 15px;
-}
-
-.approval-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-  user-select: none;
-}
 
 /* ========================================
    テーブル（index固有サイズ）

@@ -711,6 +711,7 @@ function initRecordsFilter() {
   const approvalOptions = document.getElementById(
     "recordsApprovalFilterOptions",
   );
+  approvalOptions.className = "approval-options";
   const approvalTypes = [
     { value: "all", label: "すべて" },
     { value: "approved", label: "承認済のみ" },

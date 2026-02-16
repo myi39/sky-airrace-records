@@ -626,6 +626,61 @@ tbody tr:last-child {
 }
 
 /* ========================================
+   フィルター レスポンシブ対応（両ページ共通）
+   ======================================== */
+@media (max-width: 768px) {
+  .filter-header {
+    padding: 5px 15px;
+  }
+
+  .filter-header-title {
+    font-size: 0.85em;
+  }
+
+  .filter-inner {
+    padding: 15px;
+  }
+
+  .filter-group-label {
+    font-size: 0.85em;
+  }
+
+  .filter-chip {
+    padding: 7px 12px;
+    font-size: 0.82em;
+  }
+
+  .filter-toggle-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  .filter-toggle-icon::before {
+    width: 10px;
+    height: 1.5px;
+  }
+
+  .filter-toggle-icon::after {
+    width: 1.5px;
+    height: 10px;
+  }
+
+  .approval-indicator {
+    width: 16px;
+    height: 16px;
+  }
+
+  .approval-item.selected .approval-indicator::after {
+    width: 6px;
+    height: 6px;
+  }
+
+  .approval-label {
+    font-size: 0.85em;
+  }
+}
+
+/* ========================================
    ナビゲーション レスポンシブ対応（モバイル）
    ======================================== */
 @media (max-width: 600px) {

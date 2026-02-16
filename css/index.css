@@ -311,47 +311,6 @@ td.control-cell {
     padding: 15px;
   }
 
-  /* アコーディオンアイコンのサイズ縮小 */
-  .filter-toggle-icon {
-    width: 14px;
-    height: 14px;
-  }
-
-  .filter-toggle-icon::before {
-    width: 10px;
-    height: 1.5px;
-  }
-
-  .filter-toggle-icon::after {
-    width: 1.5px;
-    height: 10px;
-  }
-
-  /* チップのサイズを縮小 */
-  .filter-chip {
-    padding: 7px 12px;
-    font-size: 0.82em;
-  }
-
-  /* フィルターグループラベルの縮小 */
-  .filter-group-label {
-    font-size: 0.85em;
-  }
-
-  /* 承認ラジオボタンの縮小 */
-  .approval-indicator {
-    width: 16px;
-    height: 16px;
-  }
-
-  .approval-item.selected .approval-indicator::after {
-    width: 6px;
-    height: 6px;
-  }
-
-  .approval-label {
-    font-size: 0.85em;
-  }
 
   /* 空状態のサイズ縮小 */
   .empty-state {

@@ -113,6 +113,12 @@ function createNavigationHTML() {
             <span class="menu-label">プレイヤー</span>
           </a>
         </li>
+        <li>
+          <a href="about.html" class="menu-item" data-page="about">
+            <span class="menu-icon">📄</span>
+            <span class="menu-label">サイトについて</span>
+          </a>
+        </li>
       </ul>
 
       <!-- メニューフッター -->

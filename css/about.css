@@ -1,0 +1,81 @@
+/* ========================================
+   サイトについてページ
+   ======================================== */
+.about-section {
+  background: white;
+  border-radius: 15px;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  margin-bottom: 25px;
+}
+
+.about-heading {
+  font-size: 1.1em;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+/* 本文リスト（・で箇条書き） */
+.about-list {
+  list-style: "・";
+  padding-left: 1.2em;
+  font-size: 0.95em;
+  color: #444;
+  line-height: 1.8;
+}
+
+.about-list li {
+  margin-bottom: 8px;
+  padding-left: 0.3em;
+}
+
+.about-list li:last-child {
+  margin-bottom: 0;
+}
+
+/* お問い合わせ内のリンクリスト */
+.about-contact {
+  list-style: none;
+  padding-left: 1.5em;
+  margin-top: 8px;
+  font-size: 0.95em;
+  line-height: 1.8;
+}
+
+.about-contact li {
+  margin-bottom: 4px;
+}
+
+/* リンク共通 */
+.about-section a {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.about-section a:hover {
+  text-decoration: underline;
+  color: #764ba2;
+}
+
+/* ========================================
+   レスポンシブ
+   ======================================== */
+@media (max-width: 768px) {
+  .about-section {
+    padding: 20px;
+    margin-bottom: 18px;
+  }
+
+  .about-heading {
+    font-size: 1em;
+  }
+
+  .about-list,
+  .about-contact {
+    font-size: 0.88em;
+  }
+}

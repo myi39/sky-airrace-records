@@ -82,6 +82,14 @@ function setupEventListeners() {
   document.getElementById("course").addEventListener("change", () => {
     updateFilterRecordCount();
     renderRanking();
+    const category = document.getElementById("category").value;
+    const course = document.getElementById("course").value;
+    if (category && course) {
+      gtag("event", "select_course", {
+        category: category,
+        course: course,
+      });
+    }
   });
 
   // アコーディオンの開閉
@@ -93,6 +101,14 @@ function setupEventListeners() {
   document
     .getElementById("applyFilterBtn")
     .addEventListener("click", applyFilter);
+
+  // コース説明リンク
+  document.getElementById("courseLinkAnchor").addEventListener("click", () => {
+    gtag("event", "click_course_link", {
+      category: document.getElementById("category").value,
+      course: document.getElementById("course").value,
+    });
+  });
 }
 
 // ========================================
@@ -562,6 +578,16 @@ function applyFilter() {
   if (isFilterOpen) {
     toggleFilter();
   }
+
+  // GA4 イベント送信
+  gtag("event", "filter_applied", {
+    category: document.getElementById("category").value,
+    course: document.getElementById("course").value,
+    versions: appliedVersions.length > 0 ? appliedVersions.join(",") : "all",
+    controls: appliedControls.length > 0 ? appliedControls.join(",") : "all",
+    approval: appliedApprovalFilter,
+    record_mode: appliedRecordMode,
+  });
 }
 
 // ========================================
@@ -739,7 +765,7 @@ function renderRanking() {
       ? username.slice(1)
       : username;
     const playerDisplay = xHandle
-      ? `<a href="player.html?user=${encodeURIComponent(username)}" class="player-link">${username}</a>`
+      ? `<a href="player.html?user=${encodeURIComponent(username)}" class="player-link" onclick="gtag('event','select_player',{player_name:'${username}',source:'ranking',category:'${category}',course:'${course}'})">${username}</a>`
       : "-";
 
     // 操作方法のアイコンを取得
@@ -753,7 +779,7 @@ function renderRanking() {
         <td>${formatDate(row["記録日"])}</td>
         <td class="control-cell">${controlIcon}</td>
         <td>${row["バージョン"] || "-"}</td>
-        <td>${row["リンク"] ? `<a href="${row["リンク"]}" target="_blank" class="video-link">▶</a>` : "-"}</td>
+        <td>${row["リンク"] ? `<a href="${row["リンク"]}" target="_blank" class="video-link" onclick="gtag('event','click_video_link',{player_name:'${username}',course:'${row["コース名"]}',category:'${row["大会種別"]}',source:'ranking'})">▶</a>` : "-"}</td>
         <td><span class="status-badge ${statusClass}">${statusText}</span></td>
       </tr>
     `;
@@ -813,7 +839,7 @@ function renderRecentSubmissions() {
       ? username.slice(1)
       : username;
     const playerDisplay = xHandle
-      ? `<a href="player.html?user=${encodeURIComponent(username)}" class="player-link">${username}</a>`
+      ? `<a href="player.html?user=${encodeURIComponent(username)}" class="player-link" onclick="gtag('event','select_player',{player_name:'${username}',source:'recent',category:'${row["大会種別"] || ""}',course:'${row["コース名"] || ""}'})">${username}</a>`
       : "-";
 
     // 操作方法のアイコンを取得
@@ -830,7 +856,7 @@ function renderRecentSubmissions() {
         <td>${formatDate(row["記録日"])}</td>
         <td class="control-cell">${controlIcon}</td>
         <td>${row["バージョン"] || "-"}</td>
-        <td>${row["リンク"] ? `<a href="${row["リンク"]}" target="_blank" class="video-link">▶</a>` : "-"}</td>
+        <td>${row["リンク"] ? `<a href="${row["リンク"]}" target="_blank" class="video-link" onclick="gtag('event','click_video_link',{player_name:'${username}',course:'${row["コース名"]}',category:'${row["大会種別"]}',source:'recent'})">▶</a>` : "-"}</td>
       </tr>
     `;
   });

@@ -295,6 +295,11 @@ function renderPlayerOverview() {
   const xHandle = getXHandle(currentPlayer);
   playerNameLink.textContent = currentPlayer;
   playerNameLink.href = `https://x.com/${xHandle}`;
+  playerNameLink.onclick = () => {
+    gtag("event", "click_x_link", {
+      player_name: currentPlayer,
+    });
+  };
 
   // 総提出記録数
   const playerRecords = getPlayerRecords(currentPlayer);
@@ -363,6 +368,11 @@ function changeVersion(version) {
   selectedVersion = version;
   renderVersionButtons();
   renderStampGrid();
+
+  gtag("event", "change_version", {
+    version: version,
+    player_name: currentPlayer,
+  });
 }
 
 /**
@@ -396,7 +406,7 @@ function renderStampGrid() {
       if (record) {
         // 記録あり
         html += `
-          <div class="course-card has-record" onclick="navigateToCourse('${category}', '${courseName}')">
+          <div class="course-card has-record" onclick="navigateToCourse('${category}', '${courseName}', true)">
             <div class="course-name">${courseName}</div>
             <div class="course-time">${record["タイム"]}</div>
             <div class="course-date">${formatDate(record["記録日"])}</div>
@@ -405,7 +415,7 @@ function renderStampGrid() {
       } else {
         // 記録なし
         html += `
-          <div class="course-card no-record" onclick="navigateToCourse('${category}', '${courseName}')">
+          <div class="course-card no-record" onclick="navigateToCourse('${category}', '${courseName}', false)">
             <div class="course-name">${courseName}</div>
             <div class="course-time">-</div>
             <div class="course-date"></div>
@@ -558,7 +568,13 @@ function adjustCardSizes() {
  * @param {string} category - 大会種別
  * @param {string} course - コース名
  */
-function navigateToCourse(category, course) {
+function navigateToCourse(category, course, hasRecord) {
+  gtag("event", "navigate_to_course", {
+    category: category,
+    course: course,
+    player_name: currentPlayer,
+    has_record: hasRecord || false,
+  });
   const url = `index.html?category=${encodeURIComponent(category)}&course=${encodeURIComponent(course)}`;
   window.location.href = url;
 }
@@ -641,7 +657,7 @@ function renderRecordsTable() {
         <td>${formatDate(record["記録日"])}</td>
         <td class="control-cell">${controlIcon}</td>
         <td>${record["バージョン"] || "-"}</td>
-        <td>${record["リンク"] ? `<a href="${record["リンク"]}" target="_blank" class="video-link">▶</a>` : "-"}</td>
+        <td>${record["リンク"] ? `<a href="${record["リンク"]}" target="_blank" class="video-link" onclick="gtag('event','click_video_link',{player_name:'${currentPlayer}',course:'${record["コース名"]}',category:'${record["大会種別"]}',source:'player_records'})">▶</a>` : "-"}</td>
         <td><span class="status-badge ${statusClass}">${statusText}</span></td>
       </tr>
     `;

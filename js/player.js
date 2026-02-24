@@ -632,7 +632,7 @@ function renderRecordsTable() {
 
   if (records.length === 0) {
     tbody.innerHTML =
-      '<tr><td colspan="9" style="text-align: center;">該当する記録がありません</td></tr>';
+      '<tr><td colspan="10" style="text-align: center;">該当する記録がありません</td></tr>';
     return;
   }
 
@@ -648,6 +648,12 @@ function renderRecordsTable() {
       const controlIcon =
         CONTROL_TYPES[record["操作方法"]] || record["操作方法"] || "-";
 
+      // 補足事項ボタン
+      const noteText = record["補足事項"] || "";
+      const noteCell = noteText
+        ? `<button class="note-btn" data-note="${noteText.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;")}" onclick="openNoteModal(this.dataset.note)">i</button>`
+        : "";
+
       return `
       <tr>
         <td>${formatDate(record["タイムスタンプ"])}</td>
@@ -659,6 +665,7 @@ function renderRecordsTable() {
         <td>${record["バージョン"] || "-"}</td>
         <td>${record["リンク"] ? `<a href="${record["リンク"]}" target="_blank" class="video-link" onclick="gtag('event','click_video_link',{player_name:'${currentPlayer}',course:'${record["コース名"]}',category:'${record["大会種別"]}',source:'player_records'})">▶</a>` : "-"}</td>
         <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+        <td>${noteCell}</td>
       </tr>
     `;
     })

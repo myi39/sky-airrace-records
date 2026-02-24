@@ -749,6 +749,7 @@ function renderRanking() {
           <th>バージョン</th>
           <th>動画</th>
           <th>状態</th>
+          <th>補足</th>
         </tr>
       </thead>
       <tbody>
@@ -772,6 +773,12 @@ function renderRanking() {
     const controlIcon =
       CONTROL_TYPES[row["操作方法"]] || row["操作方法"] || "-";
 
+    // 補足事項ボタン
+    const noteText = row["補足事項"] || "";
+    const noteCell = noteText
+      ? `<button class="note-btn" data-note="${noteText.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;")}" onclick="openNoteModal(this.dataset.note)">i</button>`
+      : "";
+
     html += `
       <tr>
         <td>${playerDisplay}</td>
@@ -781,6 +788,7 @@ function renderRanking() {
         <td>${row["バージョン"] || "-"}</td>
         <td>${row["リンク"] ? `<a href="${row["リンク"]}" target="_blank" class="video-link" onclick="gtag('event','click_video_link',{player_name:'${username}',course:'${row["コース名"]}',category:'${row["大会種別"]}',source:'ranking'})">▶</a>` : "-"}</td>
         <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+        <td>${noteCell}</td>
       </tr>
     `;
   });

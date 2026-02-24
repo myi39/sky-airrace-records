@@ -648,18 +648,12 @@ function renderRecordsTable() {
       const controlIcon =
         CONTROL_TYPES[record["操作方法"]] || record["操作方法"] || "-";
 
-      // 補足事項ボタン
-      const note = record["補足事項"] || "";
-      const noteBtn = note
-        ? `<button class="note-btn" data-note="${note.replace(/"/g, "&quot;")}" onclick="openNoteModal(this.dataset.note)">i</button>`
-        : "";
-
       return `
       <tr>
         <td>${formatDate(record["タイムスタンプ"])}</td>
         <td>${record["大会種別"] || "-"}</td>
         <td>${record["コース名"] || "-"}</td>
-        <td><strong>${record["タイム"]}秒</strong>${noteBtn}</td>
+        <td><strong>${record["タイム"]}秒</strong></td>
         <td>${formatDate(record["記録日"])}</td>
         <td class="control-cell">${controlIcon}</td>
         <td>${record["バージョン"] || "-"}</td>

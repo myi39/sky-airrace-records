@@ -772,16 +772,10 @@ function renderRanking() {
     const controlIcon =
       CONTROL_TYPES[row["操作方法"]] || row["操作方法"] || "-";
 
-    // 補足事項ボタン
-    const note = row["補足事項"] || "";
-    const noteBtn = note
-      ? `<button class="note-btn" data-note="${note.replace(/"/g, "&quot;")}" onclick="openNoteModal(this.dataset.note)">i</button>`
-      : "";
-
     html += `
       <tr>
         <td>${playerDisplay}</td>
-        <td><strong>${row["タイム"]}秒</strong>${noteBtn}</td>
+        <td><strong>${row["タイム"]}秒</strong></td>
         <td>${formatDate(row["記録日"])}</td>
         <td class="control-cell">${controlIcon}</td>
         <td>${row["バージョン"] || "-"}</td>
@@ -852,19 +846,13 @@ function renderRecentSubmissions() {
     const controlIcon =
       CONTROL_TYPES[row["操作方法"]] || row["操作方法"] || "-";
 
-    // 補足事項ボタン
-    const note = row["補足事項"] || "";
-    const noteBtn = note
-      ? `<button class="note-btn" data-note="${note.replace(/"/g, "&quot;")}" onclick="openNoteModal(this.dataset.note)">i</button>`
-      : "";
-
     html += `
       <tr>
         <td class="datetime-cell"><span class="date-part">${formatDate(row["タイムスタンプ"])}</span><span class="time-part">${formatTime(row["タイムスタンプ"])}</span></td>
         <td>${row["大会種別"] || "-"}</td>
         <td>${row["コース名"] || "-"}</td>
         <td>${playerDisplay}</td>
-        <td><strong>${row["タイム"]}秒</strong>${noteBtn}</td>
+        <td><strong>${row["タイム"]}秒</strong></td>
         <td>${formatDate(row["記録日"])}</td>
         <td class="control-cell">${controlIcon}</td>
         <td>${row["バージョン"] || "-"}</td>

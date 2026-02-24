@@ -681,6 +681,102 @@ tbody tr:last-child {
 }
 
 /* ========================================
+   補足事項ボタン・モーダル（両ページ共通）
+   ======================================== */
+
+/* テーブル内の i ボタン */
+.note-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: bold;
+  font-style: italic;
+  cursor: pointer;
+  margin-left: 6px;
+  vertical-align: middle;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.note-btn:hover {
+  background: #764ba2;
+  transform: scale(1.15);
+}
+
+/* モーダルオーバーレイ */
+.note-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, visibility 0.2s;
+}
+
+.note-modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* モーダル本体 */
+.note-modal {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.note-modal-title {
+  font-size: 1em;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #667eea;
+}
+
+.note-modal-body {
+  font-size: 0.95em;
+  color: #555;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+.note-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: #999;
+  line-height: 1;
+  padding: 0;
+}
+
+.note-modal-close:hover {
+  color: #333;
+}
+
+/* ========================================
    ナビゲーション レスポンシブ対応（モバイル）
    ======================================== */
 @media (max-width: 600px) {

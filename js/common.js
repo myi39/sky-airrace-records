@@ -73,6 +73,9 @@ function initNavigation() {
   // 現在のページをハイライト表示
   highlightCurrentPage();
 
+  // 補足事項モーダルを挿入
+  initNoteModal();
+
   console.log("✓ ナビゲーション初期化完了");
 }
 
@@ -146,10 +149,13 @@ function setupNavigationEvents() {
   // オーバーレイクリック → メニューを閉じる
   menuOverlay.addEventListener("click", closeMenu);
 
-  // ESCキー → メニューを閉じる
+  // ESCキー → メニューを閉じる / モーダルを閉じる
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && sideMenu.classList.contains("open")) {
-      closeMenu();
+    if (e.key === "Escape") {
+      if (sideMenu.classList.contains("open")) {
+        closeMenu();
+      }
+      closeNoteModal();
     }
   });
 }
@@ -186,6 +192,49 @@ function closeMenu() {
 
   // スクロールを再有効化
   document.body.style.overflow = "";
+}
+
+// ========================================
+// 補足事項モーダル
+// ========================================
+
+/**
+ * 補足事項モーダルをDOMに挿入し、イベントを設定
+ */
+function initNoteModal() {
+  document.body.insertAdjacentHTML("beforeend", `
+    <div id="noteModalOverlay" class="note-modal-overlay">
+      <div class="note-modal">
+        <button class="note-modal-close" id="noteModalCloseBtn">✕</button>
+        <div class="note-modal-title">補足事項</div>
+        <div class="note-modal-body" id="noteModalBody"></div>
+      </div>
+    </div>
+  `);
+
+  // オーバーレイ自体をクリックで閉じる
+  document.getElementById("noteModalOverlay").addEventListener("click", (e) => {
+    if (e.target === e.currentTarget) closeNoteModal();
+  });
+
+  document.getElementById("noteModalCloseBtn").addEventListener("click", closeNoteModal);
+}
+
+/**
+ * 補足事項モーダルを開く
+ * @param {string} text - 表示するテキスト
+ */
+function openNoteModal(text) {
+  document.getElementById("noteModalBody").textContent = text;
+  document.getElementById("noteModalOverlay").classList.add("active");
+}
+
+/**
+ * 補足事項モーダルを閉じる
+ */
+function closeNoteModal() {
+  const overlay = document.getElementById("noteModalOverlay");
+  if (overlay) overlay.classList.remove("active");
 }
 
 /**

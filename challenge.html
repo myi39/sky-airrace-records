@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q45VM83GSP"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-Q45VM83GSP');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sky Air Race 記録まとめ - チャレンジ</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/common.css" />
+    <link rel="stylesheet" href="css/challenge.css" />
+
+    <!-- 共通スクリプト（ナビゲーション・共通定数） -->
+    <script src="js/common.js"></script>
+  </head>
+  <body>
+    <!-- ナビゲーションはjs/common.jsで自動挿入されます -->
+
+    <div class="container">
+      <!-- ヘッダー -->
+      <header>
+        <h1>🏆 チャレンジ</h1>
+        <div class="description">
+          チャレンジとは、指定された条件をクリアしたかどうかを記録するものです。<br />
+          達成した場合は申請ページから申請してください。
+        </div>
+      </header>
+
+      <!-- チャレンジ検索・一覧ボックス -->
+      <div class="controls">
+        <h2 class="section-title">🔍 チャレンジ検索</h2>
+
+        <!-- チャレンジ選択 -->
+        <div class="control-group">
+          <label for="challengeSelect">チャレンジ</label>
+          <select id="challengeSelect">
+            <option value="">-- チャレンジを選択してください --</option>
+          </select>
+        </div>
+
+        <!-- チャレンジ説明 -->
+        <div id="challengeDescription" class="challenge-description" style="display: none"></div>
+
+        <!-- ランクフィルター（ランクあるチャレンジのみ表示） -->
+        <div class="control-group" id="rankFilterGroup" style="display: none">
+          <label>ランク</label>
+          <div class="filter-options" id="rankFilterOptions"></div>
+        </div>
+
+        <!-- 詳細フィルター（アコーディオン） -->
+        <div class="control-group">
+          <div class="advanced-filter">
+            <div class="filter-header" id="filterHeader">
+              <span class="filter-toggle-icon"></span>
+              <span class="filter-header-title">詳細フィルター</span>
+            </div>
+            <div class="filter-content" id="filterContent">
+              <div class="filter-inner">
+                <!-- 承認の有無フィルター -->
+                <div class="filter-group">
+                  <span class="filter-group-label">承認の有無
+                    <details class="approval-tooltip">
+                      <summary class="approval-tooltip-icon">?</summary>
+                      <div class="approval-tooltip-content">承認とは<br />申請された達成に不正がないことを管理人が確認したものです</div>
+                    </details>
+                  </span>
+                  <div class="filter-options" id="approvalFilterOptions"></div>
+                </div>
+
+                <!-- フィルター適用ボタン -->
+                <div class="filter-actions">
+                  <div class="filter-record-count" id="filterRecordCount">達成者数: 0人</div>
+                  <div class="filter-error" id="filterError">チャレンジを選択してください。</div>
+                  <button class="apply-filter-btn" id="applyFilterBtn">表示</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <hr class="section-divider" />
+
+        <!-- 達成者リスト -->
+        <h2 class="section-title">🎖️ 達成者リスト</h2>
+        <div id="achieversTable">
+          <div class="empty-state">
+            <div class="empty-state-icon">🏆</div>
+            <h2>チャレンジを選択してください</h2>
+            <p>上記のフィルターから表示したいチャレンジを選んでください</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ページ固有スクリプト -->
+    <script src="js/challenge.js"></script>
+  </body>
+</html>

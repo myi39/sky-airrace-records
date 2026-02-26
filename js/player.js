@@ -17,29 +17,36 @@ let isRecordsFilterOpen = false;
 let allData = [];
 let courseMaster = [];
 let versionMaster = [];
+let challengeMaster = [];
+let challengeRecords = [];
 
 // ========================================
 // データ読み込みとヘルパー関数
 // ========================================
 
 /**
- * data.jsonを読み込む
+ * data.json と challenge.json を並列で読み込む
  */
 async function loadData() {
   try {
-    const url = `./data.json?ts=${Date.now()}`;
-    const response = await fetch(url, { cache: "no-store" });
+    const [dataRes, challengeRes] = await Promise.all([
+      fetch(`./data.json?ts=${Date.now()}`, { cache: "no-store" }),
+      fetch(`./challenge.json?ts=${Date.now()}`, { cache: "no-store" }),
+    ]);
 
-    if (!response.ok) {
-      throw new Error(`データ読み込み失敗: ${response.status}`);
-    }
+    if (!dataRes.ok) throw new Error(`data.json 読み込み失敗: ${dataRes.status}`);
+    if (!challengeRes.ok) throw new Error(`challenge.json 読み込み失敗: ${challengeRes.status}`);
 
-    const data = await response.json();
+    const data = await dataRes.json();
     allData = data.records || [];
     courseMaster = data.courseMaster || [];
     versionMaster = data.versionMaster || [];
 
-    console.log(`✓ データ読み込み完了: ${allData.length}件の記録`);
+    const challengeData = await challengeRes.json();
+    challengeMaster = challengeData.challengeMaster || [];
+    challengeRecords = challengeData.challengeRecords || [];
+
+    console.log(`✓ データ読み込み完了: 記録${allData.length}件 / チャレンジ${challengeRecords.length}件`);
   } catch (error) {
     console.error("データ読み込みエラー:", error);
     throw error;
@@ -170,6 +177,11 @@ function setupEventListeners() {
     }
   });
 
+  // タブ切り替え
+  document.querySelectorAll(".player-tab").forEach((tab) => {
+    tab.addEventListener("click", () => switchTab(tab.dataset.tab));
+  });
+
   // ウィンドウリサイズ時にカードサイズを再調整
   let resizeTimeout;
   window.addEventListener("resize", () => {
@@ -273,12 +285,17 @@ function selectPlayer(username) {
   renderStampRally();
   initRecordsFilter(); // フィルター初期化
   renderRecordsTable();
+  renderChallengeTab();
 
   // 案内を非表示、セクションを表示
   document.getElementById("searchGuide").style.display = "none";
   document.getElementById("playerOverview").style.display = "block";
+  document.getElementById("playerTabs").style.display = "flex";
   document.getElementById("stampRallySection").style.display = "block";
   document.getElementById("recordsSection").style.display = "block";
+
+  // タブを「コース記録」に初期化
+  switchTab("records");
 }
 
 /**
@@ -941,6 +958,76 @@ function toggleRecordsFilterAccordion() {
     header.classList.remove("active");
     content.classList.remove("open");
   }
+}
+
+// ========================================
+// タブ切り替え
+// ========================================
+
+/**
+ * タブを切り替える
+ * @param {string} tabName - "records" または "challenges"
+ */
+function switchTab(tabName) {
+  // タブボタンのアクティブ状態を更新
+  document.querySelectorAll(".player-tab").forEach((btn) => {
+    btn.classList.toggle("active", btn.dataset.tab === tabName);
+  });
+
+  // コンテンツの表示切り替え
+  document.getElementById("tabRecords").style.display = tabName === "records" ? "block" : "none";
+  document.getElementById("tabChallenges").style.display = tabName === "challenges" ? "block" : "none";
+}
+
+// ========================================
+// チャレンジタブ描画
+// ========================================
+
+/**
+ * プレイヤーの達成チャレンジカード一覧を描画
+ */
+function renderChallengeTab() {
+  const container = document.getElementById("challengeAchievementsGrid");
+
+  // このプレイヤーの達成記録を取得（達成日昇順）
+  const playerChallenges = challengeRecords
+    .filter((r) => r["ユーザー名"] === currentPlayer)
+    .sort((a, b) => new Date(a["達成日"]) - new Date(b["達成日"]));
+
+  if (playerChallenges.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">🏆</div>
+        <h2>達成チャレンジはありません</h2>
+        <p>このプレイヤーはまだチャレンジを達成していません</p>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = playerChallenges.map((r) => {
+    const hasRank = r["ランク"];
+    const rankBadge = hasRank
+      ? `<span class="challenge-card-rank">${r["ランク"]}</span>`
+      : "";
+    const videoLink = r["リンク"]
+      ? `<a href="${r["リンク"]}" target="_blank" class="video-link">▶</a>`
+      : "";
+    const statusClass = r["承認状態"] === "OK" ? "status-approved" : "status-pending";
+    const statusText = r["承認状態"] === "OK" ? "承認済" : "未承認";
+
+    return `
+      <div class="challenge-card">
+        <div class="challenge-card-name">${r["チャレンジ名"]}</div>
+        ${rankBadge}
+        <div class="challenge-card-date">${formatDate(r["達成日"])}</div>
+        <div class="challenge-card-footer">
+          ${videoLink}
+          <span class="status-badge ${statusClass}">${statusText}</span>
+        </div>
+      </div>
+    `;
+  }).join("");
 }
 
 // ========================================

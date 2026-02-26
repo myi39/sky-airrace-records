@@ -117,6 +117,12 @@ function createNavigationHTML() {
           </a>
         </li>
         <li>
+          <a href="challenge.html" class="menu-item" data-page="challenge">
+            <span class="menu-icon">🏆</span>
+            <span class="menu-label">チャレンジ</span>
+          </a>
+        </li>
+        <li>
           <a href="about.html" class="menu-item" data-page="about">
             <span class="menu-icon">📄</span>
             <span class="menu-label">サイトについて</span>

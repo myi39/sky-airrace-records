@@ -73,127 +73,147 @@
         </div>
       </section>
 
-      <!-- スタンプラリー型サマリー（選択後に表示） -->
-      <section
-        id="stampRallySection"
-        class="stamp-rally-section"
-        style="display: none"
-      >
-        <h2 class="section-title">🎯 コース別ベストタイム</h2>
+      <!-- タブ（選択後に表示） -->
+      <div id="playerTabs" class="player-tabs" style="display: none">
+        <button class="player-tab active" data-tab="records">コース記録</button>
+        <button class="player-tab" data-tab="challenges">チャレンジ</button>
+      </div>
 
-        <!-- バージョン切り替え -->
-        <div class="version-selector">
-          <label>表示バージョン:</label>
-          <div class="version-buttons" id="versionButtons"></div>
-        </div>
+      <!-- コース記録タブコンテンツ -->
+      <div id="tabRecords">
 
-        <!-- スタンプラリーグリッド -->
-        <div id="stampRallyGrid"></div>
-      </section>
+        <!-- スタンプラリー型サマリー（選択後に表示） -->
+        <section
+          id="stampRallySection"
+          class="stamp-rally-section"
+          style="display: none"
+        >
+          <h2 class="section-title">🎯 コース別ベストタイム</h2>
 
-      <!-- 提出記録一覧（選択後に表示） -->
-      <section
-        id="recordsSection"
-        class="records-section"
-        style="display: none"
-      >
-        <h2 class="section-title">📋 全提出記録</h2>
-
-        <!-- フィルター（アコーディオン） -->
-        <div class="records-filter">
-          <div class="filter-header" id="recordsFilterHeader">
-            <span
-              class="filter-toggle-icon"
-              id="recordsFilterToggleIcon"
-            ></span>
-            <span class="filter-header-title">フィルター</span>
+          <!-- バージョン切り替え -->
+          <div class="version-selector">
+            <label>表示バージョン:</label>
+            <div class="version-buttons" id="versionButtons"></div>
           </div>
-          <div class="filter-content" id="recordsFilterContent">
-            <div class="filter-inner">
-              <!-- 大会種別セレクトボックス -->
-              <div class="filter-group">
-                <label class="filter-group-label">大会種別</label>
-                <select id="recordsCategorySelect" class="filter-select">
-                  <option value="">-- 大会種別を選択してください --</option>
-                </select>
-              </div>
 
-              <!-- コースセレクトボックス -->
-              <div class="filter-group">
-                <label class="filter-group-label">コース</label>
-                <select id="recordsCourseSelect" class="filter-select" disabled>
-                  <option value="">-- まず大会種別を選択してください --</option>
-                </select>
-              </div>
+          <!-- スタンプラリーグリッド -->
+          <div id="stampRallyGrid"></div>
+        </section>
 
-              <!-- バージョンフィルター -->
-              <div class="filter-group">
-                <span class="filter-group-label">バージョン</span>
-                <div
-                  class="filter-options"
-                  id="recordsVersionFilterOptions"
-                ></div>
-              </div>
+        <!-- 提出記録一覧（選択後に表示） -->
+        <section
+          id="recordsSection"
+          class="records-section"
+          style="display: none"
+        >
+          <h2 class="section-title">📋 全提出記録</h2>
 
-              <!-- 操作方法フィルター -->
-              <div class="filter-group">
-                <span class="filter-group-label">操作方法</span>
-                <div
-                  class="filter-options"
-                  id="recordsControlFilterOptions"
-                ></div>
-              </div>
-
-              <!-- 承認の有無フィルター -->
-              <div class="filter-group">
-                <span class="filter-group-label">承認の有無
-                  <details class="approval-tooltip">
-                    <summary class="approval-tooltip-icon">?</summary>
-                    <div class="approval-tooltip-content">承認とは<br>申請されたタイムに不正がないことを管理人が確認したものです</div>
-                  </details>
-                </span>
-                <div
-                  class="filter-options"
-                  id="recordsApprovalFilterOptions"
-                ></div>
-              </div>
-
-              <!-- フィルター適用ボタン -->
-              <div class="filter-actions">
-                <div class="filter-record-count" id="recordsFilterRecordCount">
-                  記録数: 0件
+          <!-- フィルター（アコーディオン） -->
+          <div class="records-filter">
+            <div class="filter-header" id="recordsFilterHeader">
+              <span
+                class="filter-toggle-icon"
+                id="recordsFilterToggleIcon"
+              ></span>
+              <span class="filter-header-title">フィルター</span>
+            </div>
+            <div class="filter-content" id="recordsFilterContent">
+              <div class="filter-inner">
+                <!-- 大会種別セレクトボックス -->
+                <div class="filter-group">
+                  <label class="filter-group-label">大会種別</label>
+                  <select id="recordsCategorySelect" class="filter-select">
+                    <option value="">-- 大会種別を選択してください --</option>
+                  </select>
                 </div>
-                <div class="filter-error" id="recordsFilterError">
-                  各項目ごとに1つ以上を選択してください。
+
+                <!-- コースセレクトボックス -->
+                <div class="filter-group">
+                  <label class="filter-group-label">コース</label>
+                  <select id="recordsCourseSelect" class="filter-select" disabled>
+                    <option value="">-- まず大会種別を選択してください --</option>
+                  </select>
                 </div>
-                <button class="apply-filter-btn" id="recordsApplyFilterBtn">
-                  表示
-                </button>
+
+                <!-- バージョンフィルター -->
+                <div class="filter-group">
+                  <span class="filter-group-label">バージョン</span>
+                  <div
+                    class="filter-options"
+                    id="recordsVersionFilterOptions"
+                  ></div>
+                </div>
+
+                <!-- 操作方法フィルター -->
+                <div class="filter-group">
+                  <span class="filter-group-label">操作方法</span>
+                  <div
+                    class="filter-options"
+                    id="recordsControlFilterOptions"
+                  ></div>
+                </div>
+
+                <!-- 承認の有無フィルター -->
+                <div class="filter-group">
+                  <span class="filter-group-label">承認の有無
+                    <details class="approval-tooltip">
+                      <summary class="approval-tooltip-icon">?</summary>
+                      <div class="approval-tooltip-content">承認とは<br>申請されたタイムに不正がないことを管理人が確認したものです</div>
+                    </details>
+                  </span>
+                  <div
+                    class="filter-options"
+                    id="recordsApprovalFilterOptions"
+                  ></div>
+                </div>
+
+                <!-- フィルター適用ボタン -->
+                <div class="filter-actions">
+                  <div class="filter-record-count" id="recordsFilterRecordCount">
+                    記録数: 0件
+                  </div>
+                  <div class="filter-error" id="recordsFilterError">
+                    各項目ごとに1つ以上を選択してください。
+                  </div>
+                  <button class="apply-filter-btn" id="recordsApplyFilterBtn">
+                    表示
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div class="records-table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>申請日</th>
-                <th>大会種別</th>
-                <th>コース</th>
-                <th>タイム</th>
-                <th>記録日</th>
-                <th>操作</th>
-                <th>バージョン</th>
-                <th>動画</th>
-                <th>状態</th>
-                <th>補足</th>
-              </tr>
-            </thead>
-            <tbody id="recordsTableBody"></tbody>
-          </table>
-        </div>
-      </section>
+          <div class="records-table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>申請日</th>
+                  <th>大会種別</th>
+                  <th>コース</th>
+                  <th>タイム</th>
+                  <th>記録日</th>
+                  <th>操作</th>
+                  <th>バージョン</th>
+                  <th>動画</th>
+                  <th>状態</th>
+                  <th>補足</th>
+                </tr>
+              </thead>
+              <tbody id="recordsTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+      </div><!-- /tabRecords -->
+
+      <!-- チャレンジタブコンテンツ -->
+      <div id="tabChallenges" style="display: none">
+        <section class="challenge-achievements-section">
+          <h2 class="section-title">🏆 達成チャレンジ</h2>
+          <div id="challengeAchievementsGrid"></div>
+        </section>
+      </div>
+
     </div>
 
     <!-- ページ固有スクリプト -->

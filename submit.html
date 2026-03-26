@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #cee6f1 0%, #b8e0d4 100%);
+  min-height: 100vh;
+  padding: 20px;
+}
+.container { max-width: 560px; margin: 0 auto; padding-top: 55px; }
+
+/* about.css と同じカード */
+.about-section {
+  background: white;
+  border-radius: 15px;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  margin-bottom: 25px;
+}
+
+/* about.css と同じ見出し */
+.about-heading {
+  font-size: 1.1em;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 24px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.form-group { margin-bottom: 30px; }
+.form-group:last-of-type { margin-bottom: 8px; }
+
+label {
+  display: block;
+  font-size: 0.95em;
+  font-weight: 600;
+  color: #667eea;
+  margin-bottom: 3px;
+  letter-spacing: 0.02em;
+}
+.required { color: #e53e3e; margin-left: 2px; }
+.optional { color: #aaa; font-weight: 400; margin-left: 4px; }
+.desc { font-size: 0.82em; color: #999; margin-bottom: 6px; line-height: 1.4; }
+
+.underline-input {
+  display: block;
+  appearance: none;
+  -webkit-appearance: none;
+  border: none;
+  border-bottom: 2px solid #d0d0d0;
+  border-radius: 0;
+  box-shadow: none;
+  outline: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 0.82em;
+  color: #333;
+  padding: 7px 0;
+  text-align: left;
+  line-height: 1.4;
+  height: 2.2em;
+  transition: border-color 0.2s;
+}
+.underline-input:focus { border-bottom-color: #667eea; }
+.underline-full { width: 100%; }
+.underline-time { width: 7ch; text-align: center; }
+.underline-date { width: 13ch; }
+
+textarea.underline-input {
+  height: auto;
+  resize: vertical;
+  min-height: 80px;
+  background: #f7f8fc;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 10px;
+}
+textarea.underline-input:focus { border-color: #667eea; background: white; }
+
+.select-wrapper { position: relative; }
+.select-wrapper::after {
+  content: "▼";
+  font-size: 0.65em;
+  color: #888;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+select {
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  border: 2px solid #d0d0d0;
+  border-radius: 2px;
+  padding: 8px 30px 8px 10px;
+  font-size: 0.82em;
+  background: white;
+  font-family: inherit;
+  color: #333;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+select:focus { outline: none; border-color: #667eea; }
+
+.submit-btn {
+  width: 100%;
+  margin-top: 24px;
+  padding: 13px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1em;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.submit-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(102,126,234,0.4); }
+.recaptcha-note { font-size: 0.72em; color: #bbb; text-align: center; margin-top: 10px; }
+
+/* ハンバーガー再現 */
+.hamburger-btn {
+  position: fixed; top: 0; right: 0; z-index: 1001;
+  width: 50px; height: 50px; background: white; border: none;
+  border-radius: 0 0 0 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  cursor: pointer; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 6px;
+}
+.hamburger-line { width: 24px; height: 3px; background: #667eea; border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<button class="hamburger-btn">
+  <div class="hamburger-line"></div>
+  <div class="hamburger-line"></div>
+  <div class="hamburger-line"></div>
+</button>
+
+<div class="container">
+  <div class="about-section">
+    <h3 class="about-heading">記録の申請</h3>
+
+    <div class="form-group">
+      <label>大会種別 <span class="required">*</span></label>
+      <p class="desc">コースの大会種別を選んでください</p>
+      <div class="select-wrapper">
+        <select>
+          <option value="">選択してください</option>
+          <option>本家</option>
+          <option>S杯</option>
+          <option>星の子体育祭</option>
+          <option>AG（Advance Grade）</option>
+          <option>BC（Beginers Class）</option>
+          <option>クロクラ（Close to Cloud）</option>
+          <option>個人</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>コース名 <span class="required">*</span></label>
+      <p class="desc">コースを選んでください</p>
+      <div class="select-wrapper">
+        <select>
+          <option value="">大会種別を先に選んでください</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>ユーザー名 <span class="required">*</span></label>
+      <p class="desc">X アカウント名を入力してください</p>
+      <input class="underline-input underline-full" type="text" placeholder="@username">
+    </div>
+
+    <div class="form-group">
+      <label>タイム <span class="required">*</span></label>
+      <p class="desc">記録タイムを秒単位で入力してください</p>
+      <input class="underline-input underline-time" type="text" placeholder="31.31">
+    </div>
+
+    <div class="form-group">
+      <label>記録日 <span class="required">*</span></label>
+      <p class="desc">記録を達成した日付を選んでください</p>
+      <input class="underline-input underline-date" type="date">
+    </div>
+
+    <div class="form-group">
+      <label>リンク <span class="required">*</span></label>
+      <p class="desc">動画のリンクを貼り付けてください（YouTube または X）</p>
+      <input class="underline-input underline-full" type="url" placeholder="https://">
+    </div>
+
+    <div class="form-group">
+      <label>操作方法 <span class="required">*</span></label>
+      <p class="desc">操作方法を選んでください</p>
+      <div class="select-wrapper">
+        <select>
+          <option value="">選択してください</option>
+          <option>タッチ</option>
+          <option>タッチ（箒あり）</option>
+          <option>コントローラー</option>
+          <option>コントローラー（箒あり）</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>補足事項 <span class="optional">（任意）</span></label>
+      <p class="desc">特筆すべき点があれば入力してください</p>
+      <textarea class="underline-input underline-full"></textarea>
+    </div>
+
+    <button class="submit-btn">記録を申請する</button>
+    <p class="recaptcha-note">reCAPTCHA v3 により保護されています</p>
+  </div>
+</div>
+</body>
+</html>

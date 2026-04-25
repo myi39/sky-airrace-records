@@ -11,7 +11,7 @@ body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background: linear-gradient(135deg, #cee6f1 0%, #b8e0d4 100%);
   min-height: 100vh;
-  padding: 20px;
+  padding: 20px 20px 60px;
 }
 
 .container {

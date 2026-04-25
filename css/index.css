@@ -45,15 +45,29 @@ h1 {
 }
 
 .course-link {
-  color: #667eea;
-  text-decoration: none;
-  font-size: 0.85em;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 13px;
+  background: white;
+  color: #555;
+  border: 1.5px solid #d0d8f0;
+  border-radius: 20px;
+  font-size: 0.82em;
   font-weight: 500;
+  text-decoration: none;
+  transition: border-color 0.2s, color 0.2s, box-shadow 0.2s;
 }
 
 .course-link:hover {
-  text-decoration: underline;
-  color: #764ba2;
+  border-color: #667eea;
+  color: #667eea;
+  text-decoration: none;
+  box-shadow: 0 2px 6px rgba(102, 126, 234, 0.2);
+}
+
+.course-link:active {
+  box-shadow: none;
 }
 
 /* ========================================
@@ -285,7 +299,8 @@ td.control-cell {
   }
 
   .course-link {
-    font-size: 0.7em;
+    font-size: 0.75em;
+    padding: 5px 12px;
   }
 
   .section-title {

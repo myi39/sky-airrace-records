@@ -146,6 +146,7 @@
         });
       });
     } catch (err) {
+      console.error('reCAPTCHA error:', err);
       submitBtn.textContent = '送信に失敗しました';
       submitBtn.disabled = false;
       return;

@@ -1,4 +1,6 @@
 .mcp.json
 CLAUDE.md
 .claude/
-コード.gs.superpowers/
+コード.gs
+.superpowers/
+.vscode/

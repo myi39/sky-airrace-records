@@ -4,9 +4,11 @@
   });
   const json = await res.json();
   const courseMaster = json.courseMaster || [];
+  const controlMaster = json.controlMaster || [];
 
   const categorySelect = document.getElementById("category");
   const courseSelect = document.getElementById("course");
+  const controlSelect = document.getElementById("control");
 
   const categories = [...new Set(courseMaster.map((item) => item["大会種別"]))];
   categories.forEach((cat) => {
@@ -14,6 +16,13 @@
     opt.value = cat;
     opt.textContent = cat;
     categorySelect.appendChild(opt);
+  });
+
+  controlMaster.forEach((item) => {
+    const opt = document.createElement("option");
+    opt.value = item["操作方法"];
+    opt.textContent = item["操作方法"];
+    controlSelect.appendChild(opt);
   });
 
   categorySelect.addEventListener("change", () => {

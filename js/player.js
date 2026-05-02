@@ -17,6 +17,8 @@ let isRecordsFilterOpen = false;
 let allData = [];
 let courseMaster = [];
 let versionMaster = [];
+let controlMaster = [];
+let controlIconMap = {};
 
 // ========================================
 // データ読み込みとヘルパー関数
@@ -38,6 +40,11 @@ async function loadData() {
     allData = data.records || [];
     courseMaster = data.courseMaster || [];
     versionMaster = data.versionMaster || [];
+    controlMaster = data.controlMaster || [];
+    controlIconMap = {};
+    controlMaster.forEach(item => {
+      controlIconMap[item["操作方法"]] = item["操作方法_絵文字"] || "";
+    });
 
     console.log(`✓ データ読み込み完了: ${allData.length}件の記録`);
   } catch (error) {
@@ -646,7 +653,7 @@ function renderRecordsTable() {
       const statusText =
         record["承認状態"] === "OK" ? "承認済" : "未承認";
       const controlIcon =
-        CONTROL_TYPES[record["操作方法"]] || record["操作方法"] || "-";
+        controlIconMap[record["操作方法"]] || record["操作方法"] || "-";
 
       // 補足事項ボタン
       const noteText = record["補足事項"] || "";
@@ -718,10 +725,12 @@ function initRecordsFilter() {
   const controlOptions = document.getElementById(
     "recordsControlFilterOptions",
   );
-  Object.entries(CONTROL_TYPES).forEach(([controlType, icon]) => {
+  controlMaster.forEach(item => {
+    const controlType = item["操作方法"];
+    const icon = item["操作方法_絵文字"] || "";
     const chip = document.createElement("div");
     chip.className = "filter-chip selected";
-    chip.innerHTML = `<span class="filter-icon">${icon}</span>${controlType}`;
+    chip.innerHTML = icon ? `<span class="filter-icon">${icon}</span>${controlType}` : controlType;
     chip.dataset.control = controlType;
     chip.addEventListener("click", function () {
       this.classList.toggle("selected");
@@ -777,7 +786,7 @@ function initRecordsFilter() {
 
   // 初期化時は全選択状態
   tempRecordsSelectedVersions = versionMaster.map((v) => v["バージョン"]);
-  tempRecordsSelectedControls = Object.keys(CONTROL_TYPES);
+  tempRecordsSelectedControls = controlMaster.map(item => item["操作方法"]);
   tempRecordsApprovalFilter = "all";
 
   // 初期記録数を更新

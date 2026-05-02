@@ -6,6 +6,8 @@
 let allData = []; // 全記録データ
 let courseMaster = []; // コースマスターデータ
 let versionMaster = []; // バージョンマスターデータ
+let controlMaster = []; // コントロールマスターデータ
+let controlIconMap = {}; // 操作方法 → 絵文字 のマップ
 
 // フィルター選択状態（一時的な選択状態）
 let tempSelectedVersions = []; // 詳細フィルター内で一時選択中のバージョン
@@ -140,6 +142,11 @@ async function loadData() {
     allData = json.records || [];
     courseMaster = json.courseMaster || [];
     versionMaster = json.versionMaster || [];
+    controlMaster = json.controlMaster || [];
+    controlIconMap = {};
+    controlMaster.forEach(item => {
+      controlIconMap[item["操作方法"]] = item["操作方法_絵文字"] || "";
+    });
 
     console.log("データ読み込み完了");
     console.log("- records:", allData.length);
@@ -315,10 +322,12 @@ function populateControlFilters() {
   const container = document.getElementById("controlFilterOptions");
   container.innerHTML = "";
 
-  Object.entries(CONTROL_TYPES).forEach(([controlType, icon]) => {
+  controlMaster.forEach(item => {
+    const controlType = item["操作方法"];
+    const icon = item["操作方法_絵文字"] || "";
     const chip = document.createElement("div");
     chip.className = "filter-chip selected"; // デフォルトで選択状態
-    chip.innerHTML = `<span class="filter-icon">${icon}</span>${controlType}`;
+    chip.innerHTML = icon ? `<span class="filter-icon">${icon}</span>${controlType}` : controlType;
     chip.dataset.control = controlType;
 
     chip.addEventListener("click", () => {
@@ -771,7 +780,7 @@ function renderRanking() {
 
     // 操作方法のアイコンを取得
     const controlIcon =
-      CONTROL_TYPES[row["操作方法"]] || row["操作方法"] || "-";
+      controlIconMap[row["操作方法"]] || row["操作方法"] || "-";
 
     // 補足事項ボタン
     const noteText = row["補足事項"] || "";
@@ -852,7 +861,7 @@ function renderRecentSubmissions() {
 
     // 操作方法のアイコンを取得
     const controlIcon =
-      CONTROL_TYPES[row["操作方法"]] || row["操作方法"] || "-";
+      controlIconMap[row["操作方法"]] || row["操作方法"] || "-";
 
     html += `
       <tr>

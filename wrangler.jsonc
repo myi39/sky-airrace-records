@@ -6,7 +6,10 @@
     "enabled": true
   },
   "assets": {
-    "directory": "."
+    "directory": ".",
+    "exclude": [
+      ".gitignore,
+]
   },
   "compatibility_flags": [
     "nodejs_compat"

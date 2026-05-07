@@ -8,8 +8,8 @@
   "assets": {
     "directory": ".",
     "exclude": [
-      ".gitignore",
-]
+      ".gitignore"
+    ]
   },
   "compatibility_flags": [
     "nodejs_compat"

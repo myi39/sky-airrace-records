@@ -1,0 +1,17 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "sky-airrace-records",
+  "compatibility_date": "2026-05-07",
+  "observability": {
+    "enabled": true
+  },
+  "assets": {
+    "directory": ".",
+    "exclude": [
+      ".gitignore"
+    ]
+  },
+  "compatibility_flags": [
+    "nodejs_compat"
+  ]
+}

@@ -3,16 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/common.css" />
     <link rel="stylesheet" href="css/submit.css" />
+    <script src="js/common.js"></script>
     <script src="https://www.google.com/recaptcha/api.js?render=6LcW8M8sAAAAADc9zZzAc2Uh9LoreX2HQL5T5QDq"></script>
   </head>
   <body>
-    <button class="hamburger-btn">
-      <div class="hamburger-line"></div>
-      <div class="hamburger-line"></div>
-      <div class="hamburger-line"></div>
-    </button>
-
     <div class="container">
       <div class="about-section">
         <h3 class="about-heading">記録の申請</h3>
@@ -128,9 +124,13 @@
     <!-- Result Modal -->
     <div id="result-modal" class="modal-overlay">
       <div class="modal-card modal-card-result">
+        <button id="result-dismiss-btn" class="result-dismiss-btn">✕</button>
         <div id="result-icon" class="result-icon"></div>
         <p id="result-message" class="result-message"></p>
-        <button id="result-close-btn" class="modal-btn modal-btn-primary">閉じる</button>
+        <div class="result-actions">
+          <button id="result-close-btn" class="modal-btn modal-btn-primary">閉じる</button>
+          <button id="result-continue-btn" class="modal-btn modal-btn-secondary">続いて申請する</button>
+        </div>
       </div>
     </div>
 

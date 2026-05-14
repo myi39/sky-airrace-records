@@ -150,6 +150,8 @@
   const modalBackBtn = document.getElementById("modal-back-btn");
   const modalSubmitBtn = document.getElementById("modal-submit-btn");
   const resultCloseBtn = document.getElementById("result-close-btn");
+  const resultDismissBtn = document.getElementById("result-dismiss-btn");
+  const resultContinueBtn = document.getElementById("result-continue-btn");
 
   function openModal(modal) {
     modal.classList.add("open");
@@ -190,17 +192,50 @@
       icon.textContent = "✓";
       icon.className = "result-icon result-icon-success";
       message.textContent = "申請が完了しました！\n反映まで数分かかります。";
-      resultCloseBtn.textContent = "レコードリストに移動";
+      resultCloseBtn.textContent = "レコードリストへ";
       resultCloseBtn.dataset.action = "navigate";
+      resultContinueBtn.style.display = "";
     } else {
       icon.textContent = "✕";
       icon.className = "result-icon result-icon-error";
       message.textContent = "申請に失敗しました。\nしばらく待ってもう一度お試しください。";
       resultCloseBtn.textContent = "閉じる";
       resultCloseBtn.dataset.action = "close";
+      resultContinueBtn.style.display = "none";
     }
     openModal(resultModal);
   }
+
+  function resetForm() {
+    categorySelect.value = "";
+    courseSelect.innerHTML = '<option value="">大会種別を先に選んでください</option>';
+    courseSelect.disabled = true;
+    document.getElementById("username").value = "";
+    document.getElementById("time").value = "";
+    document.getElementById("record-date").value = "";
+    document.getElementById("link").value = "";
+    controlSelect.value = "";
+    document.getElementById("notes").value = "";
+    FIELDS.forEach((field) => {
+      field.el.classList.remove("input-error");
+      const errorEl = document.getElementById(field.errorId);
+      if (errorEl) {
+        errorEl.textContent = "";
+        errorEl.style.display = "none";
+      }
+    });
+  }
+
+  resultContinueBtn.style.display = "none";
+
+  resultDismissBtn.addEventListener("click", () => {
+    closeModal(resultModal);
+  });
+
+  resultContinueBtn.addEventListener("click", () => {
+    closeModal(resultModal);
+    resetForm();
+  });
 
   submitBtn.addEventListener("click", (e) => {
     e.preventDefault();

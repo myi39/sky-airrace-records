@@ -117,15 +117,6 @@ select:focus { outline: none; border-color: #667eea; }
 .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(102,126,234,0.4); }
 .recaptcha-note { font-size: 0.72em; color: #bbb; text-align: center; margin-top: 10px; }
 
-.hamburger-btn {
-  position: fixed; top: 0; right: 0; z-index: 1001;
-  width: 50px; height: 50px; background: white; border: none;
-  border-radius: 0 0 0 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  cursor: pointer; display: flex; flex-direction: column;
-  align-items: center; justify-content: center; gap: 6px;
-}
-.hamburger-line { width: 24px; height: 3px; background: #667eea; border-radius: 2px; }
-
 /* Validation */
 .field-error {
   display: none;
@@ -248,8 +239,33 @@ textarea.underline-input.input-error {
 
 /* Result modal */
 .modal-card-result {
+  position: relative;
   text-align: center;
   padding: 36px 28px 28px;
+}
+.result-dismiss-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 1em;
+  color: #aaa;
+  cursor: pointer;
+  padding: 4px 8px;
+  line-height: 1;
+  border-radius: 4px;
+}
+.result-dismiss-btn:hover {
+  color: #333;
+  background: #f0f0f0;
+}
+.result-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 20px;
 }
 .result-icon {
   width: 58px;

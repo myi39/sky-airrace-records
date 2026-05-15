@@ -104,6 +104,12 @@ function createNavigationHTML() {
           </a>
         </li>
         <li>
+          <a href="submit.html" class="menu-item" data-page="submit">
+            <span class="menu-icon">✈️</span>
+            <span class="menu-label">申請</span>
+          </a>
+        </li>
+        <li>
           <a href="about.html" class="menu-item" data-page="about">
             <span class="menu-icon">📄</span>
             <span class="menu-label">サイトについて</span>

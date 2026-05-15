@@ -4,22 +4,9 @@
  * Sky Air Race 記録システム - 共通モジュール
  *
  * 内容:
- * - 共通定数（CONTROL_TYPES）
  * - 共通ユーティリティ関数（formatDate, getUrlParams）
  * - ナビゲーション管理（旧 navigation.js）
  */
-
-// ========================================
-// 共通定数
-// ========================================
-
-// 操作方法の表示用アイコンマッピング
-const CONTROL_TYPES = {
-  タッチ: "👆",
-  "タッチ（箒あり）": "👆🧹",
-  コントローラー: "🎮",
-  "コントローラー（箒あり）": "🎮🧹",
-};
 
 // ========================================
 // 共通ユーティリティ関数
@@ -114,6 +101,12 @@ function createNavigationHTML() {
           <a href="player.html" class="menu-item" data-page="player">
             <span class="menu-icon">👤</span>
             <span class="menu-label">プレイヤー</span>
+          </a>
+        </li>
+        <li>
+          <a href="submit.html" class="menu-item" data-page="submit">
+            <span class="menu-icon">✈️</span>
+            <span class="menu-label">申請</span>
           </a>
         </li>
         <li>

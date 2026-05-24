@@ -4,6 +4,8 @@ CLAUDE.md
 コード.gs
 .superpowers/
 .vscode/
+docs/
+worker/
 
 # wrangler files
 .wrangler

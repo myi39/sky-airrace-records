@@ -141,7 +141,7 @@
   });
 
   const GAS_URL =
-    "https://script.google.com/macros/s/AKfycbxCJxqlXfQiM6k7dyAdqpuHkMcaomm3DFntPp5GQsav2GjxIWSv-7gOQcPl_2eyFulE8w/exec";
+    "https://sky-airrace-records-worker.myi-kotonoha.workers.dev/api/submit-record";
   const SITE_KEY = "6LcW8M8sAAAAADc9zZzAc2Uh9LoreX2HQL5T5QDq";
 
   const submitBtn = document.getElementById("submit-btn");
@@ -293,7 +293,7 @@
     try {
       const res = await fetch(GAS_URL, {
         method: "POST",
-        headers: { "Content-Type": "text/plain" },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
       const result = await res.json();

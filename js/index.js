@@ -719,8 +719,8 @@ function renderRanking() {
       valueA = new Date(a["記録日"]).getTime();
       valueB = new Date(b["記録日"]).getTime();
     } else if (currentSort.column === "ユーザー名") {
-      valueA = (a["ユーザー名"] || "").toLowerCase();
-      valueB = (b["ユーザー名"] || "").toLowerCase();
+      valueA = getDisplayName(allData, a).toLowerCase();
+      valueB = getDisplayName(allData, b).toLowerCase();
       return currentSort.order === "asc"
         ? valueA.localeCompare(valueB)
         : valueB.localeCompare(valueA);
@@ -770,8 +770,7 @@ function renderRanking() {
     const statusText = row["承認状態"] === "OK" ? "承認済" : "未承認";
 
     // プレイヤー名は最新のユーザーネームで表示・リンクする
-    const playerId = row["ユーザーID"] || row["ユーザー名"];
-    const username = playerId ? getCurrentUsername(allData, playerId) : (row["ユーザー名"] || "");
+    const username = getDisplayName(allData, row);
     const xHandle = username.startsWith("@")
       ? username.slice(1)
       : username;
@@ -853,8 +852,7 @@ function renderRecentSubmissions() {
 
   recentData.forEach((row) => {
     // プレイヤー名は最新のユーザーネームで表示・リンクする（生の投稿時ユーザーネームはSheets側に残る）
-    const playerId = row["ユーザーID"] || row["ユーザー名"];
-    const username = playerId ? getCurrentUsername(allData, playerId) : (row["ユーザー名"] || "");
+    const username = getDisplayName(allData, row);
     const xHandle = username.startsWith("@")
       ? username.slice(1)
       : username;

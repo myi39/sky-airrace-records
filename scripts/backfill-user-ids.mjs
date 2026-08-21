@@ -2,6 +2,9 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+// worker/ は .gitignore 対象のため、リポジトリを新規cloneしただけの環境には存在しない。
+// このスクリプトを実行するには事前に worker/src/lookupUserId.js をローカルに用意する必要がある
+// （無い場合は ERR_MODULE_NOT_FOUND で失敗する）。
 import { lookupUserId } from '../worker/src/lookupUserId.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));

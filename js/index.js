@@ -534,14 +534,14 @@ function updateFilterRecordCount() {
     filteredData = filteredData.filter((row) => row["承認状態"] === "OK");
   }
 
-  // 表示件数フィルター
+  // 表示件数フィルター（同一人物は ユーザーID で判定）
   if (tempRecordMode === "best") {
     const bestByPlayer = new Map();
     filteredData.forEach((row) => {
-      const player = row["ユーザー名"];
-      const existing = bestByPlayer.get(player);
+      const playerId = row["ユーザーID"] || row["ユーザー名"];
+      const existing = bestByPlayer.get(playerId);
       if (!existing || parseFloat(row["タイム"]) < parseFloat(existing["タイム"])) {
-        bestByPlayer.set(player, row);
+        bestByPlayer.set(playerId, row);
       }
     });
     filteredData = Array.from(bestByPlayer.values());
@@ -695,14 +695,14 @@ function renderRanking() {
     filteredData = filteredData.filter((row) => row["承認状態"] === "OK");
   }
 
-  // プレイヤーごとに最速タイム1件に絞る
+  // プレイヤーごとに最速タイム1件に絞る（同一人物は ユーザーID で判定）
   if (appliedRecordMode === "best") {
     const bestByPlayer = new Map();
     filteredData.forEach((row) => {
-      const player = row["ユーザー名"];
-      const existing = bestByPlayer.get(player);
+      const playerId = row["ユーザーID"] || row["ユーザー名"];
+      const existing = bestByPlayer.get(playerId);
       if (!existing || parseFloat(row["タイム"]) < parseFloat(existing["タイム"])) {
-        bestByPlayer.set(player, row);
+        bestByPlayer.set(playerId, row);
       }
     });
     filteredData = Array.from(bestByPlayer.values());
@@ -769,8 +769,9 @@ function renderRanking() {
       row["承認状態"] === "OK" ? "status-approved" : "status-pending";
     const statusText = row["承認状態"] === "OK" ? "承認済" : "未承認";
 
-    // プレイヤー名からXのURLを生成
-    const username = row["ユーザー名"] || "";
+    // プレイヤー名は最新のユーザーネームで表示・リンクする
+    const playerId = row["ユーザーID"] || row["ユーザー名"];
+    const username = playerId ? getCurrentUsername(allData, playerId) : (row["ユーザー名"] || "");
     const xHandle = username.startsWith("@")
       ? username.slice(1)
       : username;
@@ -851,7 +852,9 @@ function renderRecentSubmissions() {
   `;
 
   recentData.forEach((row) => {
-    const username = row["ユーザー名"] || "";
+    // プレイヤー名は最新のユーザーネームで表示・リンクする（生の投稿時ユーザーネームはSheets側に残る）
+    const playerId = row["ユーザーID"] || row["ユーザー名"];
+    const username = playerId ? getCurrentUsername(allData, playerId) : (row["ユーザー名"] || "");
     const xHandle = username.startsWith("@")
       ? username.slice(1)
       : username;

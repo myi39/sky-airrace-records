@@ -73,10 +73,9 @@ function getPlayerRecords(username) {
  * 特定プレイヤーのベストタイムをコースごとに取得
  */
 function getPlayerBestTimes(username, targetVersion = "0.24.5~") {
-  const playerRecords = allData.filter(
-    (record) =>
-      record["ユーザー名"] === username &&
-      record["バージョン"] === targetVersion,
+  const userId = resolveUserId(allData, username);
+  const playerRecords = (userId ? getRecordsByUserId(allData, userId) : []).filter(
+    (record) => record["バージョン"] === targetVersion,
   );
 
   const bestTimes = {};

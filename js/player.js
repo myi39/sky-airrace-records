@@ -57,20 +57,16 @@ async function loadData() {
  * 全プレイヤーのリストを取得
  */
 function getAllPlayers() {
-  const playerSet = new Set();
-  allData.forEach((record) => {
-    if (record["ユーザー名"]) {
-      playerSet.add(record["ユーザー名"]);
-    }
-  });
-  return Array.from(playerSet).sort();
+  return getAllCurrentPlayers(allData);
 }
 
 /**
  * 特定プレイヤーの全記録を取得
  */
 function getPlayerRecords(username) {
-  return allData.filter((record) => record["ユーザー名"] === username);
+  const userId = resolveUserId(allData, username);
+  if (!userId) return [];
+  return getRecordsByUserId(allData, userId);
 }
 
 /**
@@ -265,14 +261,16 @@ function hideSuggestions() {
  * @param {string} username - プレイヤー名
  */
 function selectPlayer(username) {
+  const userId = resolveUserId(allData, username);
+  const displayName = userId ? getCurrentUsername(allData, userId) : username;
   currentPlayer = username;
 
-  // URLを更新（履歴に追加）
-  const newUrl = `${window.location.pathname}?user=${encodeURIComponent(username)}`;
+  // URLを更新（履歴に追加、最新ユーザーネームに揃える）
+  const newUrl = `${window.location.pathname}?user=${encodeURIComponent(displayName)}`;
   window.history.pushState({}, "", newUrl);
 
   // 検索ボックスを更新
-  document.getElementById("playerSearchInput").value = username;
+  document.getElementById("playerSearchInput").value = displayName;
   hideSuggestions();
 
   // プレイヤーデータを表示
@@ -298,13 +296,15 @@ function renderPlayerOverview() {
     "completedCoursesCount",
   );
 
-  // X（Twitter）リンク
-  const xHandle = getXHandle(currentPlayer);
-  playerNameLink.textContent = currentPlayer;
+  // X（Twitter）リンク（最新のユーザーネームで表示・リンクする）
+  const userId = resolveUserId(allData, currentPlayer);
+  const displayName = userId ? getCurrentUsername(allData, userId) : currentPlayer;
+  const xHandle = getXHandle(displayName);
+  playerNameLink.textContent = displayName;
   playerNameLink.href = `https://x.com/${xHandle}`;
   playerNameLink.onclick = () => {
     gtag("event", "click_x_link", {
-      player_name: currentPlayer,
+      player_name: displayName,
     });
   };
 
